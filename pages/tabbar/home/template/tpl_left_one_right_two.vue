@@ -1,4 +1,3 @@
-
 <template>
   <div class="layout">
     <div class="view-height-150" @click="modelNavigateTo(res.list[0])">
@@ -22,9 +21,9 @@
 </template>
 <script>
 
-import { modelNavigateTo } from "./tpl";
+import {modelNavigateTo} from "./tpl";
 export default {
-  title: "左一右二",
+  title: "Left One, Right Two",
   props: ["res"],
   data() {
     return {

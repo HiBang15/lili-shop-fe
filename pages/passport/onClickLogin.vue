@@ -1,20 +1,20 @@
 <template>
-  <div class="form">
-    <u-form ref="validateCodeForm">
-      <div class="login-list">
-        <!-- 循环出当前可使用的第三方登录模式 -->
-        <div class="login-item" v-for="(item,index) in loginList" :key="index">
-          <u-icon :color="item.color" size="80" :name="item.icon" @click="navigateLogin(item)"></u-icon>
-        </div>
-      </div>
-      <view class="text-tips cell" @click="clickCodeLogin">账号密码登录</view>
-    </u-form>
-  </div>
+   <div class="form">
+     <u-form ref="validateCodeForm">
+       <div class="login-list">
+         <!-- Loop out the currently available third-party login mode -->
+         <div class="login-item" v-for="(item,index) in loginList" :key="index">
+           <u-icon :color="item.color" size="80" :name="item.icon" @click="navigateLogin(item)"></u-icon>
+         </div>
+       </div>
+       <view class="text-tips cell" @click="clickCodeLogin">Account password login</view>
+     </u-form>
+   </div>
 </template>
 
 <script>
 import {  openIdLogin } from "@/api/connect.js";
-import { whetherNavigate } from "@/utils/Foundation"; //登录跳转
+import { whetherNavigate } from "@/utils/Foundation"; //Login Jump
 import { getUserInfo } from "@/api/members";
 import storage from "@/utils/storage.js";
 import api from "@/config/api.js";
@@ -48,27 +48,27 @@ export default {
   props: ["status"],
   mounted() {
     //#ifdef APP-PLUS
-    /**如果是app 加载支持的登录方式*/
+    /**If it is a login method supported by app loading*/
     let _this = this;
     uni.getProvider({
       service: "oauth",
       success: (result) => {
         _this.loginList = result.provider.map((value) => {
-          //展示title
+          //Display title
           let title = "";
-          //系统code
+          //System code
           let code = "";
-          //颜色
+          //colour
           let color = "#8b8b8b";
-          //图标
+          //icon
           let icon = "";
-          //uni 联合登录 code
+          //uni joint login code
           let appcode = "";
           switch (value) {
             case "weixin":
               icon = "weixin-circle-fill";
               color = "#00a327";
-              title = "微信";
+              title = "WeChat";
               code = "WECHAT";
               break;
             case "qq":
@@ -95,7 +95,7 @@ export default {
       },
       fail: (error) => {
         uni.showToast({
-          title: "获取登录通道失败" + error,
+          title: "Failed to obtain login channel" + error,
           duration: 2000,
           icon: "none",
         });
@@ -103,43 +103,43 @@ export default {
     });
     //#endif
 
-    //特殊平台，登录方式需要过滤
+    //Special platform, login method needs to be filtered
     // #ifdef H5
     this.methodFilter(["QQ"]);
     // #endif
 
-    //微信小程序，只支持微信登录
+    //WeChat applet, only supports WeChat login
     // #ifdef MP-WEIXIN
     this.methodFilter(["WECHAT"]);
     // #endif
   },
 
   methods: {
-    /** 根据参数显示登录模块 */
+    /** Display the login module according to the parameters */
     methodFilter(code) {
       // let way = [];
       // this.loginList.forEach((item) => {
-      //   if (code.length != 0) {
-      //     code.forEach((val) => {
-      //       if (item.code == val) {
-      //         way.push(item);
-      //       }
-      //     });
-      //   } else {
-      //     uni.showToast({
-      //       title: '配置有误请联系管理员',
-      //       duration: 2000,
-      //       icon:"none"
-      //     });
-      //   }
+      // if (code.length != 0) {
+      // code.forEach((val) => {
+      // if (item.code == val) {
+      // way.push(item);
+      //}
+      // });
+      //} else {
+      // uni.showToast({
+      // title:'Please contact the administrator if the configuration is incorrect',
+      // duration: 2000,
+      // icon: "none"
+      // });
+      //}
       // });
       // this.loginList = way;
     },
-    /**跳转到登录页面 */
+    /** Jump to the login page */
     navigateLogin(connectLogin) {
       if (!this.status) {
         uni.showToast({
-          title: "请您阅读并同意用户协议以及隐私政策",
+          title: "Please read and agree to the user agreement and privacy policy",
           duration: 2000,
           icon: "none",
         });
@@ -148,7 +148,7 @@ export default {
 
       // #ifdef H5
       let code = connectLogin.code;
-	  let buyer = api.buyer;
+let buyer = api.buyer;
       window.open(buyer+`/connect/login/web/`+code, "_self");
       // #endif
       // #ifdef APP-PLUS
@@ -156,47 +156,47 @@ export default {
       // #endif
     },
 
-    // 跳转到一键登录
+    // Jump to one-click login
     clickCodeLogin() {
       this.$emit("open", "code");
     },
 
-    //非h5 获取openid
+    //Non-h5 get openid
     async nonH5OpenId(item) {
       let _this = this;
-      //获取各个openid
+      //Get each openid
       await uni.login({
         provider: item.appcode,
         // #ifdef MP-ALIPAY
-        scopes: "auth_user", //支付宝小程序需设置授权类型
+        scopes: "auth_user", //Alipay applet needs to set the authorization type
         // #endif
         success: function (res) {
           uni.setStorageSync("type", item.code);
-          //微信小程序意外的其它方式直接在storage中写入openid
+          //Other unexpected ways of WeChat applet write openid directly in storage
           // #ifndef MP-WEIXIN
           uni.setStorageSync("openid", res.authResult.openid);
           // #endif
         },
         fail(e) {
           uni.showToast({
-            title: "第三方登录暂不可用！",
+            title: "Third-party login is temporarily unavailable!",
             icon: "none",
             duration: 3000,
           });
         },
         complete(e) {
-          //获取用户信息
+          //Get user information
           uni.getUserInfo({
             provider: item.appcode,
             success: function (infoRes) {
-              //写入用户信息
+              //Write user information
               uni.setStorageSync("nickname", infoRes.userInfo.nickName);
               uni.setStorageSync("avatar", infoRes.userInfo.avatarUrl);
 
               // #ifdef MP-WEIXIN
-              //微信小程序获取openid 需要特殊处理 如需获取openid请参考uni-id: https://uniapp.dcloud.net.cn/uniCloud/uni-id
+              //WeChat applet to obtain openid requires special handling. To obtain openid, please refer to uni-id: https://uniapp.dcloud.net.cn/uniCloud/uni-id
               _this.weixinMPOpenID(res).then((res) => {
-                //这里需要先行获得openid，再使用openid登录，小程序登录需要两步，所以这里特殊编译
+                //Here you need to obtain openid first, and then log in with openid. Mini program login requires two steps, so here is a special compilation
                 _this.goOpenidLogin("WECHAT_MP");
               });
               // #endif
@@ -209,22 +209,22 @@ export default {
         },
       });
     },
-    //openid 登录
+    //openid login
     goOpenidLogin(clientType) {
       let _this = this;
-      // 获取准备好的参数，进行登录系统
+      // Get the prepared parameters and log in to the system
       let params = {
-        uuid: uni.getStorageSync("openid"), //联合登陆id
-        source: uni.getStorageSync("type"), //联合登陆类型
-        nickname: uni.getStorageSync("nickname"), // 昵称
-        avatar: uni.getStorageSync("avatar"), // 头像
-        uniAccessToken: uni.getStorageSync("uni_access_token"), //第三方token
+        uuid: uni.getStorageSync("openid"), //joint login id
+        source: uni.getStorageSync("type"), //joint login type
+        nickname: uni.getStorageSync("nickname"), // nickname
+        avatar: uni.getStorageSync("avatar"), // Avatar
+        uniAccessToken: uni.getStorageSync("uni_access_token"), //third-party token
       };
       openIdLogin(params, clientType).then((res) => {
         if (!res.data.success) {
-          let errormessage = "第三方登录暂不可用";
+          let errormessage = "Third-party login is temporarily unavailable";
           uni.showToast({
-            // title: '未绑定第三方账号',
+            // title:'Unbound third-party account',
             title: errormessage,
             icon: "none",
             duration: 3000,
@@ -233,12 +233,12 @@ export default {
         } else {
           storage.setAccessToken(res.data.result.accessToken);
           storage.setRefreshToken(res.data.result.refreshToken);
-          // 登录成功
+          // login successful
           uni.showToast({
-            title: "第三方登录成功!",
+            title: "The third-party login is successful!",
             icon: "none",
           });
-          // 执行登录
+          // Perform login
           getUserInfo().then((user) => {
             storage.setUserInfo(user.data.result);
             storage.setHasLogin(true);
@@ -247,7 +247,7 @@ export default {
         }
       });
     },
-    //微信小程序获取openid
+    //WeChat applet to get openid
     async weixinMPOpenID(res) {
       await miniProgramLogin(res.code).then((res) => {
         uni.setStorageSync("openid", res.data);

@@ -9,27 +9,28 @@
 </template>
 
 <script>
-import { modelNavigateTo } from "./tpl";
+import { modelNavigateTo } from './tpl';
+
 export default {
-  title: "导航栏",
-  props: ["res"],
+  title: 'Navigation Bar',
+  props: ['res'],
   watch: {
     res: {
       handler(newValue, oldValue) {
-        this.$set(this, "res", newValue);
+        this.$set(this, 'res', newValue);
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
 
   mounted() {
-   
+
   },
   methods: {
     clickSwiper(index) {
       modelNavigateTo(this.res.list[index]);
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

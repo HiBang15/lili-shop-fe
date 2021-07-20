@@ -72,21 +72,21 @@
 
 <script>
 const dropdownOption1 = [
-  { id: 0, text: '类型', value: '', select: false },
-  { id: 1, text: '全场券', value: 1, select: false },
-  { id: 2, text: '品类券', value: 2, select: false },
-  { id: 3, text: '单品券', value: 3, select: false },
-  { id: 4, text: '业务券', value: 4, select: false }
+   {id: 0, text:'Type', value:'', select: false },
+   {id: 1, text:'Full ticket', value: 1, select: false },
+   {id: 2, text:'Category Voucher', value: 2, select: false },
+   {id: 3, text:'Single product coupon', value: 3, select: false },
+   {id: 4, text:'Business Voucher', value: 4, select: false}
 ]
 const dropdownOption2 = [
-  { id: 5, text: '状态', value: '', select: false },
-  { id: 6, text: '可使用', value: 1, select: false },
-  { id: 7, text: '已过期', value: 2, select: false }
+   {id: 5, text:'Status', value:'', select: false },
+   {id: 6, text:'Available', value: 1, select: false },
+   {id: 7, text:'Expired', value: 2, select: false}
 ]
 const dropdownOption3 = [
-  { id: 8, text: '优惠力度', value: '', select: false },
-  { id: 9, text: '满100-20', value: 1, select: false },
-  { id: 10, text: '满100-50', value: 2, select: false }
+   {id: 8, text:'Preferential strength', value:'', select: false },
+   {id: 9, text:'Full 100-20', value: 1, select: false },
+   {id: 10, text:'full 100-50', value: 2, select: false}
 ]
 
 export default {

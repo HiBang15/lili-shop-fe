@@ -51,7 +51,7 @@
 					<text v-if="endDate">至{{endDate}}</text>
 				</view>
 				<view class="u-calendar__bottom__btn">
-					<u-button :type="btnType" shape="circle" size="default" @click="btnFix(false)">确定</u-button>
+					<u-button :type="btnType" shape="circle" size="default" @click="btnFix(false)">determine</u-button>
 				</view>
 			</view>
 		</view>
@@ -88,7 +88,7 @@
 	 * @property {Boolean} closeable 是否显示右上角的关闭图标(默认true)
 	 * @example <u-calendar v-model="show" :mode="mode"></u-calendar>
 	 */
-	
+
 	export default {
 		name: 'u-calendar',
 		props: {
@@ -184,7 +184,7 @@
 			rangeBgColor: {
 				type: String,
 				default: 'rgba(41,121,255,0.13)'
-			}, 
+			},
 			// 范围内日期字体颜色
 			rangeColor: {
 				type: String,
@@ -193,12 +193,12 @@
 			// mode=range时生效，起始日期自定义文案
 			startText: {
 				type: String,
-				default: '开始'
+				default: 'begin'
 			},
 			// mode=range时生效，结束日期自定义文案
 			endText: {
 				type: String,
-				default: '结束'
+				default: 'the end'
 			},
 			//按钮样式类型
 			btnType: {
@@ -223,16 +223,16 @@
 			// 顶部的提示文字
 			toolTip: {
 				type: String,
-				default: '选择日期'
+				default: 'Select date'
 			}
 		},
 		data() {
 			return {
 				// 星期几,值为1-7
-				weekday: 1, 
+				weekday: 1,
 				weekdayArr:[],
 				// 当前月有多少天
-				days: 0, 
+				days: 0,
 				daysArr:[],
 				showTitle: '',
 				year: 2020,
@@ -251,7 +251,7 @@
 				isStart: true,
 				min: null,
 				max: null,
-				weekDayZh: ['日', '一', '二', '三', '四', '五', '六']
+				weekDayZh: ['Day','one','two','three','four','five','six']
 			};
 		},
 		computed: {
@@ -346,7 +346,7 @@
 				let overstep = false;
 				if (year < this.minYear || year > this.maxYear) {
 					uni.showToast({
-						title: "日期超出范围啦~",
+						title: "The date is out of range~",
 						icon: 'none'
 					})
 					overstep = true;
@@ -427,7 +427,7 @@
 			getWeekText(date) {
 				date = new Date(`${date.replace(/\-/g, '/')} 00:00:00`);
 				let week = date.getDay();
-				return '星期' + ['日', '一', '二', '三', '四', '五', '六'][week];
+				return 'Week' + ['day','one','two','three','four','five','six'][week];
 			},
 			btnFix(show) {
 				if (!show) {
@@ -488,17 +488,17 @@
 
 <style scoped lang="scss">
 	@import "../../libs/css/style.components.scss";
-	
+
 	.u-calendar {
 		color: $u-content-color;
-		
+
 		&__header {
 			width: 100%;
 			box-sizing: border-box;
 			font-size: 30rpx;
 			background-color: #fff;
 			color: $u-main-color;
-			
+
 			&__text {
 				margin-top: 30rpx;
 				padding: 0 60rpx;
@@ -507,14 +507,14 @@
 				align-items: center;
 			}
 		}
-		
+
 		&__action {
 			padding: 40rpx 0 40rpx 0;
-			
+
 			&__icon {
 				margin: 0 16rpx;
 			}
-			
+
 			&__text {
 				padding: 0 16rpx;
 				color: $u-main-color;
@@ -523,20 +523,20 @@
 				font-weight: bold;
 			}
 		}
-	
+
 		&__week-day {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			padding: 6px 0;
 			overflow: hidden;
-			
+
 			&__text {
 				flex: 1;
 				text-align: center;
 			}
 		}
-	
+
 		&__content {
 			width: 100%;
 			display: flex;
@@ -545,17 +545,17 @@
 			box-sizing: border-box;
 			background-color: #fff;
 			position: relative;
-			
+
 			&--end-date {
 				border-top-right-radius: 8rpx;
 				border-bottom-right-radius: 8rpx;
 			}
-			
+
 			&--start-date {
 				border-top-left-radius: 8rpx;
 				border-bottom-left-radius: 8rpx;
 			}
-			
+
 			&__item {
 				width: 14.2857%;
 				display: flex;
@@ -565,7 +565,7 @@
 				overflow: hidden;
 				position: relative;
 				z-index: 2;
-				
+
 				&__inner {
 					height: 84rpx;
 					display: -webkit-box;
@@ -577,7 +577,7 @@
 					font-size: 32rpx;
 					position: relative;
 					border-radius: 50%;
-					
+
 					&__desc {
 						width: 100%;
 						font-size: 24rpx;
@@ -590,7 +590,7 @@
 						bottom: 2rpx;
 					}
 				}
-				
+
 				&__tips {
 					width: 100%;
 					font-size: 24rpx;
@@ -604,7 +604,7 @@
 					z-index: 2;
 				}
 			}
-			
+
 			&__bg-month {
 				position: absolute;
 				font-size: 130px;
@@ -616,7 +616,7 @@
 				z-index: 1;
 			}
 		}
-	
+
 		&__bottom {
 			width: 100%;
 			display: flex;
@@ -628,11 +628,11 @@
 			box-sizing: border-box;
 			font-size: 24rpx;
 			color: $u-tips-color;
-			
+
 			&__choose {
 				height: 50rpx;
 			}
-			
+
 			&__btn {
 				width: 100%;
 			}

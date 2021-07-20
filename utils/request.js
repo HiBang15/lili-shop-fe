@@ -8,14 +8,14 @@ import api from "@/config/api.js";
 import uuid from "@/utils/uuid.modified.js";
 
 /**
- *  无痛刷新token思路（如果不使用无痛刷新token,忽略此处注释）
- * 看了很多，有个问题一直得不到解决----‘多个接口请求，token失效，如何让获取token只获取一遍’、
- * 于是想到了闭包防抖......
- * 本方案并不是最佳方案，只是给你们提供一种思路。如果你有完美解决方案，可以分享一下
+ * Painless refresh token idea (if you do not use painless refresh token, ignore the note here)
+ * After reading a lot, there is a problem that has not been solved-‘multiple interface requests and token failure, how to get the token only once’,
+ * So I thought of closure anti-shake...
+ * This plan is not the best plan, but just to provide you with a way of thinking. If you have a perfect solution, you can share it
  */
-const expireToken = []; // 储存过期的token
+const expireToken = []; // store expired token
 
-// 防抖闭包来一波
+// A wave of anti-shake closure
 function getTokenDebounce() {
   let lock = false;
   let success = false;
@@ -25,7 +25,7 @@ function getTokenDebounce() {
       await refreshTokenFn(storage.getRefreshToken())
         .then((res) => {
           if (res.data.success) {
-            let { accessToken, refreshToken } = res.data.result;
+            let {accessToken, refreshToken} = res.data.result;
             storage.setAccessToken(accessToken);
             storage.setRefreshToken(refreshToken);
             success = true;
@@ -43,7 +43,7 @@ function getTokenDebounce() {
         });
     }
     return new Promise((resolve) => {
-      // XXX 我只能想到通过轮询来看获取新的token是否结束，有好的方案可以说。一直看lock,直到请求失败或者成功
+      // XXX I can only think of polling to see if the acquisition of new tokens is over. There are good solutions. Keep watching the lock until the request fails or succeeds
       const timer = setInterval(() => {
         if (!lock) {
           clearInterval(timer);
@@ -55,14 +55,14 @@ function getTokenDebounce() {
             resolve("fail");
           }
         }
-      }, 100); // 轮询时间可以自己看改成多少合适
+      }, 100); // The polling time can be changed by yourself
     });
   };
 }
 
 function cleanStorage() {
   uni.showToast({
-    title: "你的登录状态已过期，请重新登录",
+    title: "Your login status has expired, please log in again",
     icon: "none",
     duration: 1500,
   });
@@ -73,7 +73,7 @@ function cleanStorage() {
   storage.setHasLogin(false);
   storage.setAccessToken("");
   storage.setRefreshToken("");
-  console.log("清空token");
+  console.log("Empty token");
   storage.setUuid("");
   storage.setUserInfo({});
 
@@ -86,18 +86,18 @@ let http = new Request();
 const refreshToken = getTokenDebounce();
 
 http.setConfig((config) => {
-  // 没有uuid创建
+  // No uuid created
   if (!storage.getUuid()) {
     storage.setUuid(uuid.v1());
   }
 
-  /* 设置全局配置 */
+  /* Set global configuration */
   config.baseURL = api.buyer;
   config.header = {
     ...config.header,
   };
   config.validateStatus = (statusCode) => {
-    // 不论什么状态,统一在正确中处理
+    // Regardless of the status, we will deal with it correctly
     return true;
   };
   return config;
@@ -105,7 +105,7 @@ http.setConfig((config) => {
 
 http.interceptors.request.use(
   (config) => {
-    /* 请求之前拦截器。可以使用async await 做异步操作 */
+    /* Interceptor before request. You can use async await to do asynchronous operations */
     let accessToken = storage.getAccessToken();
     if (accessToken) {
       const nonce = Foundation.randomString(6);
@@ -117,18 +117,18 @@ http.interceptors.request.use(
         sign,
       };
       let params = config.params || {};
-      params = { ...params, ..._params };
+      params = {...params, ..._params };
 
       config.params = params;
       config.header.accessToken = accessToken;
 
       /**
-       * jwt 因为安卓以及ios没有window的属性
-       * window.atob（）这个函数 base64编码的使用方法就是btoa（），而用于解码的使用方法是atob（），
-       * 所以使用手写 base-64 编码的字符串数据。
+       * jwt because Android and ios have no window attribute
+       * The window.atob() function is used for base64 encoding using btoa(), and the used method for decoding is atob(),
+       * So use handwritten base-64 encoded string data.
        */
       const atob = (str) => Buffer.from(str, "base64").toString("binary");
-      // 判断如果过期时间小于我的当前时间，在请求上重新刷新token
+      // Determine if the expiration time is less than my current time, refresh the token on the request
       if (accessToken.split(".").length <= 1) {
         refresh();
       } else {
@@ -137,7 +137,7 @@ http.interceptors.request.use(
             atob(
               accessToken.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")
             )
-          ).exp < Math.round(new Date() / 1000)
+          ).exp <Math.round(new Date() / 1000)
         ) {
           refresh();
         }
@@ -155,20 +155,20 @@ http.interceptors.request.use(
 );
 
 async function refresh() {
-  // 本地储存的是过期token了，重新获取
+  // The locally stored token is expired, get it again
   const getTokenResult = await refreshToken();
   if (getTokenResult === "success") {
-    // 获取新的token成功 刷新当前页面
+    // Get the new token successfully, refresh the current page
 
-    let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
-    let curRoute = routes[routes.length - 1].route; //获取当前页面路由
-    let curParam = routes[routes.length - 1].options; //获取路由参数
-    // 拼接参数
+    let routes = getCurrentPages(); // Get the currently opened page routing array
+    let curRoute = routes[routes.length-1].route; //Get the current page route
+    let curParam = routes[routes.length-1].options; //Get routing parameters
+    // splicing parameters
     let param = "";
     for (let key in curParam) {
       param += "&" + key + "=" + curParam[key];
     }
-    // 判断当前路径
+    // Determine the current path
     if (curRoute.indexOf("pages/tabbar") == 1) {
       uni.switchTab({
         url: "/" + curRoute + param.replace("&", "?"),
@@ -181,29 +181,29 @@ async function refresh() {
   }
 }
 
-// 必须使用异步函数，注意
+// Must use asynchronous function, pay attention
 http.interceptors.response.use(
   async (response) => {
-    /* 请求之后拦截器。可以使用async await 做异步操作  */
-    // token存在并且token过期
+    /* Interceptor after request. You can use async await to do asynchronous operations */
+    // token exists and token expires
     let token = storage.getAccessToken();
     if (
       (token && response.statusCode === 403) ||
       response.data.status === 403
     ) {
-      // jwt token 过期了
-      expireToken.push(token); // 把过期token 储存
+      // jwt token expired
+      expireToken.push(token); // Store expired token
       const currentToken = storage.getAccessToken();
       if (expireToken.includes(currentToken)) {
         refresh();
       }
-      // 如果当前返回没登录
+      // If the current return is not logged
     } else if (
       (!token && response.statusCode === 403) ||
       response.data.code === 403
     ) {
       cleanStorage();
-      // 如果当前状态码为正常但是success为不正常时
+      // If the current status code is normal but success is abnormal
     } else if (
       (response.statusCode == 200 && !response.data.success) ||
       response.statusCode == 400

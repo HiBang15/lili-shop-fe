@@ -1,28 +1,32 @@
 <template>
   <view class="category-wrap">
     <u-navbar class="navbar" :is-back="false">
-      <div class="title"> 商品分类</div>
-      <u-search class="nav-search" disabled @click.native="search" placeholder="搜索商品" :show-action="false"></u-search>
+      <div class="title"> Product category</div>
+      <u-search class="nav-search" disabled @click.native="search" placeholder="search products"
+                :show-action="false"></u-search>
     </u-navbar>
     <view class="content">
       <scroll-view scroll-y scroll-with-animation class="left-aside">
-        <view v-for="(item, index) in tabList" :key="item.id" class="f-item b-b" :class="{ active: item.id === currentId }" @click="tabtap(item, index)">
+        <view v-for="(item, index) in tabList" :key="item.id" class="f-item bb"
+              :class="{ active: item.id === currentId }" @click="tabtap(item, index)">
           {{ item.name }}
         </view>
       </scroll-view>
       <scroll-view scroll-with-animation scroll-y class="right-aside" :upper-threshold="-100" :lower-threshold="-100">
-        <!-- 头部图片 -->
+        <!-- Head picture -->
         <view class="top-img" id="main-top">
-          <u-image width="500rpx" height="230rpx" @click="navigateToList(topImg.id,topImg.id)" :src="topImg.image" mode="">
+          <u-image width="500rpx" height="230rpx" @click="navigateToList(topImg.id,topImg.id)" :src="topImg.image"
+                   mode="">
           </u-image>
         </view>
         <view v-for="item in categoryList" :key="item.id" class="s-list" :id="'main-' + item.id">
-          <!-- 分类标题 -->
+          <!-- Category title -->
           <text class="s-item">{{ item.name }}</text>
-          <!-- 分类详情 -->
+          <!-- Classification details -->
           <view class="t-list">
-            <view @click="navigateToList(item.id, children.id)" v-if="children.parentId === item.id" class="t-item" v-for="(children, cIndex) in item.children" :key="children.id"
-              :class="{ 'margin-right': (cIndex + 1) % 3 == 0 }">
+            <view @click="navigateToList(item.id, children.id)" v-if="children.parentId === item.id" class="t-item"
+                  v-for="(children, cIndex) in item.children" :key="children.id"
+                  :class="{'margin-right': (cIndex + 1)% 3 == 0 }">
               <u-image width="70px" height="70px" :src="children.image" :lazy-load="true">
               </u-image>
               <text>{{ children.name }}</text>
@@ -35,35 +39,36 @@
 </template>
 
 <script>
-import { getCategoryList } from "@/api/goods.js";
+import { getCategoryList } from '@/api/goods.js';
+
 export default {
   data() {
     return {
       currentId: 0,
-      tabList: [], //左侧标题列表
-      categoryList: [], //右侧分类数据列表
-      topImg: "", //顶部图片
+      tabList: [], //Title list on the left
+      categoryList: [], //Category data list on the right
+      topImg: '' //top image
     };
   },
   onLoad() {
     this.loadData();
     // #ifdef MP-WEIXIN
-    // 小程序默认分享
-    uni.showShareMenu({ withShareTicket: true });
+    // Mini Programs are shared by default
+    uni.showShareMenu({withShareTicket: true});
     // #endif
   },
   methods: {
     /**
-     * 查询
+     * Inquire
      */
     search() {
       uni.navigateTo({
-        url: "/pages/navigation/search/searchPage",
+        url: '/pages/navigation/search/searchPage'
       });
     },
 
     /**
-     * 加载图片
+     * Load picture
      */
     async loadData() {
       let list = await getCategoryList(0);
@@ -73,14 +78,14 @@ export default {
     },
 
     /**
-     * 加载列表内容
+     * Load list content
      */
     loadListContent(index) {
       this.topImg = this.tabList[index];
       this.categoryList = this.tabList[index].children;
     },
     /**
-     * 一级分类点击
+     * Click on the first level category
      */
     tabtap(item, i) {
       if (item.id != this.currentId) {
@@ -91,10 +96,10 @@ export default {
 
     navigateToList(sid, tid) {
       uni.navigateTo({
-        url: `/pages/navigation/search/searchPage?category=${tid}`,
+        url: `/pages/navigation/search/searchPage?category=${ tid }`
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -103,11 +108,13 @@ page {
   height: 100%;
   background-color: #fdfaff;
 }
+
 /* 解决小程序和app滚动条的问题 */
 /* #ifdef MP-WEIXIN || APP-PLUS */
 ::-webkit-scrollbar {
   display: none;
 }
+
 /* #endif */
 /* 解决H5 的问题 */
 /* #ifdef H5 */
@@ -115,104 +122,120 @@ uni-scroll-view .uni-scroll-view::-webkit-scrollbar {
   /* 隐藏滚动条，但依旧具备可以滚动的功能 */
   display: none;
 }
+
 /* #endif */
 .s-list {
-  box-shadow: 0 4rpx 12rpx 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4 rpx 12 rpx 0 rgba(0, 0, 0, 0.05);
 }
+
 .nav-search {
-  padding-left: 30rpx !important;
-  padding-right: 20rpx !important;
+  padding-left: 30 rpx !important;
+  padding-right: 20 rpx !important;
 }
+
 .title {
   display: block;
-  width: 200rpx;
+  width: 200 rpx;
   text-align: center;
-  font-size: 34rpx;
-  letter-spacing: 2rpx;
+  font-size: 34 rpx;
+  letter-spacing: 2 rpx;
   // #ifdef MP-WEIXIN
-  margin-left: 26rpx;
+  margin-left: 26 rpx;
   // #endif
 }
+
 .category-wrap {
   height: 100%;
+
   .content {
     height: calc(100vh - 94px);
     display: flex;
     color: #333;
-    font-size: 28rpx;
+    font-size: 28 rpx;
     background: #fff;
   }
+
   .left-aside {
     flex-shrink: 0;
-    width: 200rpx;
+    width: 200 rpx;
     height: 100%;
     background-color: #f7f7f7;
   }
+
   .f-item {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 97rpx;
+    height: 97 rpx;
     position: relative;
+
     &.active {
       font-weight: bold;
       color: $light-color;
       background: #fff;
     }
   }
+
   .right-aside {
     flex: 1;
     overflow: hidden;
-    padding: 40rpx 0 0 30rpx;
+    padding: 40 rpx 0 0 30 rpx;
   }
 
   .top-img {
-    width: 500rpx;
-    height: 230rpx;
+    width: 500 rpx;
+    height: 230 rpx;
     border-radius: 8px;
     overflow: hidden;
+
     image {
       width: 100%;
       height: 100%;
     }
   }
+
   .s-item {
     display: flex;
     align-items: center;
-    height: 70rpx;
-    padding-top: 16rpx;
+    height: 70 rpx;
+    padding-top: 16 rpx;
     font-weight: 500;
   }
+
   .t-list {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    padding-top: 12rpx;
+    padding-top: 12 rpx;
   }
+
   .margin-right {
     margin-right: 0 !important;
   }
+
   .t-item {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 150rpx;
-    margin-right: 25rpx;
-    font-size: 24rpx;
-    padding-bottom: 20rpx;
+    width: 150 rpx;
+    margin-right: 25 rpx;
+    font-size: 24 rpx;
+    padding-bottom: 20 rpx;
+
     image {
-      width: 140rpx;
-      height: 140rpx;
+      width: 140 rpx;
+      height: 140 rpx;
       border-radius: 8px;
-      margin-bottom: 20rpx;
+      margin-bottom: 20 rpx;
     }
+
     /deep/ .u-image {
-      width: 140rpx !important;
-      height: 140rpx !important;
+      width: 140 rpx !important;
+      height: 140 rpx !important;
       border-radius: 8px !important;
-      margin-bottom: 20rpx !important;
+      margin-bottom: 20 rpx !important;
     }
   }
 }

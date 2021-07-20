@@ -6,19 +6,24 @@
     <scroll-view scroll-x>
       <view class="index-navs">
         <view class="index-nav-v">
-          <view class="index-nav" :class="{ 'index-nav-active': nav == index }" @click="clickNavigateTime(index)" v-for="(item, index) in timeLine" :key="index">
+          <view class="index-nav" :class="{'index-nav-active': nav == index }" @click="clickNavigateTime(index)"
+                v-for="(item, index) in timeLine" :key="index">
             {{ item.timeLine }}:00
-            <view class="index-nav-desc">{{ index === 0 && item.distanceStartTime === 0 ? '抢购中' : '即将开始' }}
+            <view class="index-nav-desc">{{
+                index === 0 && item.distanceStartTime === 0 ? 'Buying soon' : 'Coming soon'
+              }}
             </view>
           </view>
         </view>
       </view>
       <view class="trailer" v-if="timeLine[nav] && times">
-        {{ timeLine[nav].distanceStartTime === 0 ? (onlyOne ? '距结束' : '距下一轮') : '距开始' }}
-        {{ times.hours == '00' ? '0' : times.hours }}小时{{ times.minutes }}分{{ times.seconds }}秒
+        {{
+          timeLine[nav].distanceStartTime === 0 ? (onlyOne ? 'distance to end' : 'distance to next round') : 'distance to start'
+        }}
+        {{ times.hours == '00' ? '0' : times.hours }} hours {{ times.minutes }} minutes {{ times.seconds }} seconds
       </view>
     </scroll-view>
-    <view class="sale-items" v-if="goodsList.length > 0">
+    <view class="sale-items" v-if="goodsList.length> 0">
       <view class="sale-item" v-for="(item,index) in goodsList" :key="index">
         <view class="sale-item-img">
           <image :src="item.goodsImage" mode="aspectFill"></image>
@@ -29,16 +34,19 @@
             <view class="sale-item-title-desc"></view>
           </view>
           <view class="sale-item-price">
-            <text class="sale-item-price-now">¥{{ item.price | unitPrice}}</text>
+            <text class="sale-item-price-now">¥{{ item.price | unitPrice }}</text>
             <text class="sale-item-price-origin"> ¥{{ item.originalPrice | unitPrice }}</text>
           </view>
           <view class="sale-item-surplus">
-            仅剩{{ item.quantity - item.salesNum }}件
-            <view class="sale-item-surplus-text" :style="{ width: (item.quantity / (item.quantity - item.salesNum)) * 100 + '%' }">
+            Only {{ item.quantity - item.salesNum }} left
+            <view class="sale-item-surplus-text"
+                  :style="{ width: (item.quantity / (item.quantity-item.salesNum)) * 100 +'%' }">
             </view>
           </view>
           <view class="sale-item-btn" @click="navigateToGoodsDetail(item)">
-            {{ timeLine[nav].distanceStartTime === 0 ? (item.salesNum === item.quantity ? '已售空' : '购买') : '即将开始' }}
+            {{
+              timeLine[nav].distanceStartTime === 0 ? (item.salesNum === item.quantity ? 'Sold out' : 'Purchase') : 'Coming soon'
+            }}
           </view>
         </view>
       </view>
@@ -46,7 +54,7 @@
     <view v-else>
       <view class="nodata">
         <image style="height: 240rpx;width: 320rpx;" src="/static/nodata.png" alt="" />
-        <div>暂无商品</div>
+        <div>No products yet</div>
       </view>
     </view>
 
@@ -54,35 +62,36 @@
 </template>
 
 <script>
-import { getSeckillTimeLine, getSeckillTimeGoods } from "@/api/promotions.js";
-import Foundation from "@/utils/Foundation.js";
+import { getSeckillTimeLine, getSeckillTimeGoods } from '@/api/promotions.js';
+import Foundation from '@/utils/Foundation.js';
+
 export default {
   data() {
     return {
-      nav: 0, //默认选择第一个时间
-      timeLine: "", //获取几个点活动
-      resTime: 0, //当前时间
-      time: 0, //距离下一个活动的时间值
-      times: {}, //时间集合
-      onlyOne: "", //是否最后一个商品
-      goodsList: [], //商品集合
+      nav: 0, //The first time is selected by default
+      timeLine: '', //Get a few points of activity
+      resTime: 0, //current time
+      time: 0, //Time value from the next activity
+      times: {}, //Time collection
+      onlyOne: '', //Is the last product
+      goodsList: [], //Commodity collection
       params: {
         pageNumber: 1,
-        pageSize: 10,
-      },
+        pageSize: 10
+      }
     };
   },
 
   /**
-   * 显示时间活动
+   * Show time activity
    */
   async onShow() {
     await this.getTimeLine();
     if (!this.timeLine) {
       await uni.showToast({
-        icon: "none",
+        icon: 'none',
         duration: 2000,
-        title: "今天没有活动，明天再来吧",
+        title: 'No event today, come back tomorrow'
       });
     }
     this._setTimeInterval = setInterval(() => {
@@ -102,13 +111,13 @@ export default {
   },
   methods: {
     /**
-     * 获取时间线商品
+     * Get timeline products
      */
     async getTimeLine() {
       let res = await getSeckillTimeLine();
       if (res.data.success && res.data.result.length > 0) {
         let timeLine = res.data.result.sort(
-          (x, y) => Number(x.timeLine) - Number(y.timeLine)
+            (x, y) => Number(x.timeLine) - Number(y.timeLine)
         );
         this.timeLine = timeLine.slice(0, 5);
         this.resTime = parseInt(new Date().getTime() / 1000);
@@ -116,10 +125,10 @@ export default {
         this.diffTime = parseInt(new Date().getTime() / 1000) - this.resTime;
 
         this.time =
-          this.timeLine[this.nav].distanceStartTime ||
-          (this.timeLine[this.nav + 1] &&
-            this.timeLine[this.nav + 1].distanceStartTime) ||
-          Foundation.theNextDayTime() - this.diffTime;
+            this.timeLine[this.nav].distanceStartTime ||
+            (this.timeLine[this.nav + 1] &&
+                this.timeLine[this.nav + 1].distanceStartTime) ||
+            Foundation.theNextDayTime() - this.diffTime;
         this.times = Foundation.countTimeDown(this.time);
 
         this.getGoodsList();
@@ -127,7 +136,7 @@ export default {
     },
 
     /**
-     * 获取商品集合
+     * Get product collection
      */
     async getGoodsList() {
       this.params.timeLine = this.timeLine[this.nav].timeLine;
@@ -140,37 +149,37 @@ export default {
     },
 
     /**
-     * 跳转到商品详情
+     * Jump to product details
      */
     navigateToGoodsDetail(item) {
       if (
-        item.sold_num === item.quantity ||
-        this.timeLine[this.nav].distanceStartTime !== 0
+          item.sold_num === item.quantity ||
+          this.timeLine[this.nav].distanceStartTime !== 0
       ) {
         return;
       } else {
         uni.navigateTo({
-          url: `/pages/product/goods?id=${item.skuId}&goodsId=${item.goodsId}`,
+          url: `/pages/product/goods?id=${ item.skuId }&goodsId=${ item.goodsId }`
         });
       }
     },
 
     /**
-     * 单击导航时间
+     * Click navigation time
      */
     clickNavigateTime(type) {
       this.nav = type;
       this.diffTime = parseInt(new Date().getTime() / 1000) - this.resTime;
       this.time =
-        this.timeLine[this.nav].distanceStartTime ||
-        (this.timeLine[this.nav + 1] &&
-          this.timeLine[this.nav + 1].distanceStartTime) ||
-        Foundation.theNextDayTime() - this.diffTime;
+          this.timeLine[this.nav].distanceStartTime ||
+          (this.timeLine[this.nav + 1] &&
+              this.timeLine[this.nav + 1].distanceStartTime) ||
+          Foundation.theNextDayTime() - this.diffTime;
 
       this.times = Foundation.countTimeDown(this.time);
       this.getGoodsList();
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -187,11 +196,11 @@ export default {
   width: 100%;
   justify-content: center;
   align-items: center;
-  margin-top: 40rpx;
+  margin-top: 40 rpx;
 
   > div {
-    font-size: 24rpx;
-    margin-top: 20rpx;
+    font-size: 24 rpx;
+    margin-top: 20 rpx;
     color: #666;
   }
 }
@@ -199,12 +208,12 @@ export default {
 .sale-head {
   image {
     width: 100%;
-    height: 280rpx;
+    height: 280 rpx;
   }
 }
 
 .sale-items {
-  padding-top: 20rpx;
+  padding-top: 20 rpx;
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
@@ -213,11 +222,11 @@ export default {
 }
 
 .sale-item {
-  width: 710rpx;
-  height: 226rpx;
-  padding-left: 20rpx;
-  margin-bottom: 10rpx;
-  border-radius: 12rpx;
+  width: 710 rpx;
+  height: 226 rpx;
+  padding-left: 20 rpx;
+  margin-bottom: 10 rpx;
+  border-radius: 12 rpx;
   background-color: #fff;
   position: relative;
   display: -webkit-box;
@@ -227,11 +236,12 @@ export default {
 }
 
 .sale-item-img {
-  margin-right: 20rpx;
+  margin-right: 20 rpx;
+
   image {
-    width: 186rpx;
-    height: 186rpx;
-    border-radius: 8rpx;
+    width: 186 rpx;
+    height: 186 rpx;
+    border-radius: 8 rpx;
   }
 }
 
@@ -245,28 +255,28 @@ export default {
   -webkit-line-clamp: 2;
   overflow: hidden;
   line-height: 1.5;
-  font-size: 28rpx;
+  font-size: 28 rpx;
   color: #333;
 }
 
 .sale-item-title-desc {
-  font-size: 22rpx;
+  font-size: 22 rpx;
   color: #999;
 }
 
 .sale-item-price {
-  font-size: 22rpx;
+  font-size: 22 rpx;
   color: 999;
 }
 
 .sale-item-price-now {
-  font-size: 40rpx;
+  font-size: 40 rpx;
   color: #ff5a10;
-  margin: 0 10rpx;
+  margin: 0 10 rpx;
 }
 
 .sale-item-price-origin {
-  font-size: 20rpx;
+  font-size: 20 rpx;
   color: #999;
 
   -webkit-text-decoration-line: line-through;
@@ -275,21 +285,21 @@ export default {
 }
 
 .sale-item-surplus {
-  border: 2rpx solid rgb(34, 178, 140);
+  border: 2 rpx solid rgb(34, 178, 140);
   border-radius: 12px;
-  width: 166rpx;
+  width: 166 rpx;
   color: rgb(31, 177, 138);
-  font-size: 20rpx;
+  font-size: 20 rpx;
   position: relative;
   text-align: center;
   z-index: 2;
-  height: 32rpx;
-  line-height: 28rpx;
+  height: 32 rpx;
+  line-height: 28 rpx;
   overflow: hidden;
 }
 
 .sale-item-surplus-text {
-  width: 166rpx;
+  width: 166 rpx;
   background: rgb(234, 247, 245);
   position: absolute;
   top: 0;
@@ -300,13 +310,13 @@ export default {
 
 .sale-item-btn {
   position: absolute;
-  right: 20rpx;
-  bottom: 20rpx;
-  padding: 0 20rpx;
-  height: 60rpx;
+  right: 20 rpx;
+  bottom: 20 rpx;
+  padding: 0 20 rpx;
+  height: 60 rpx;
   background-color: #1abc9c;
-  border-radius: 10rpx;
-  font-size: 25rpx;
+  border-radius: 10 rpx;
+  font-size: 25 rpx;
   color: #fff;
   display: -webkit-box;
   display: -webkit-flex;
@@ -316,14 +326,14 @@ export default {
 }
 
 .trailer {
-  height: 100rpx;
+  height: 100 rpx;
   background: #ffffff;
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 22rpx;
+  font-size: 22 rpx;
   color: #666666;
   box-sizing: border-box;
   position: relative;
@@ -349,22 +359,22 @@ export default {
 }
 
 .index-nav {
-  font-size: 28rpx;
+  font-size: 28 rpx;
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 150rpx;
+  width: 150 rpx;
   flex-direction: column;
   color: #bababa;
-  height: 115rpx;
+  height: 115 rpx;
   line-height: 1em;
   position: relative;
 
   &-active {
     background-image: url(/static/seckill/active.png);
-    background-size: 100% 115rpx;
+    background-size: 100% 115 rpx;
     background-repeat: no-repeat;
     color: #ffffff;
     position: relative;
@@ -377,8 +387,8 @@ export default {
 }
 
 .index-nav-desc {
-  margin-top: 8rpx;
-  font-size: 22rpx;
+  margin-top: 8 rpx;
+  font-size: 22 rpx;
   color: #bababa;
 }
 </style>

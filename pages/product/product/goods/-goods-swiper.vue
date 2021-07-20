@@ -1,5 +1,5 @@
 <template>
-  <!-- 轮播图 -->
+  <!-- Carousel Picture -->
   <view class="carousel">
     <swiper circular="true" duration="400" @change="swiperChange">
       <swiper-item class="swiper-item" v-for="(item, index) in res" :key="index">
@@ -17,16 +17,16 @@
 export default {
   data() {
     return {
-      current: 1,
+      current: 1
     };
   },
-  props: ["res"],
+  props: ['res'],
   methods: {
-    // 轮播图对应的dot
+    // Dot corresponding to the carousel picture
     swiperChange(e) {
       this.current = e.detail.current + 1;
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -34,8 +34,8 @@ export default {
   // #ifdef MP-WEIXIN
   margin-top: 44px;
   // #endif
-  width: 750rpx;
-  height: 750rpx;
+  width: 750 rpx;
+  height: 750 rpx;
   position: relative;
 
   swiper {
@@ -51,7 +51,7 @@ export default {
     display: flex;
     justify-content: center;
     align-content: center;
-    height: 750rpx;
+    height: 750 rpx;
     overflow: hidden;
 
     image {
@@ -64,14 +64,14 @@ export default {
 
   .swiper-dots {
     position: absolute;
-    right: 0rpx;
-    bottom: 40rpx;
-    font-size: 32rpx;
-    width: 107rpx;
-    height: 44rpx;
-    line-height: 44rpx;
+    right: 0 rpx;
+    bottom: 40 rpx;
+    font-size: 32 rpx;
+    width: 107 rpx;
+    height: 44 rpx;
+    line-height: 44 rpx;
     text-align: center;
-    border-radius: 30rpx 0rpx 0rpx 30rpx;
+    border-radius: 30 rpx 0 rpx 0 rpx 30 rpx;
     background: #333333;
     opacity: 0.4;
     font-weight: 400;

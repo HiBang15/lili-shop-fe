@@ -1,18 +1,17 @@
-echo '开始推送github'
-echo '切换git地址'
+echo'start pushing github'
+echo'Switch git address'
 git remote rm origin
 
 git remote add origin git@github.com:hongyehuicheng/lilishop-uniapp.git
-echo '设置上传代码分支，推送github'
+echo'Set upload code branch, push github'
 git push --set-upstream origin master --force
-echo '推送github完成'
+echo'Push github completed'
 git remote rm origin
 
 git remote add origin git@gitee.com:beijing_hongye_huicheng/lilishop-uniapp.git
 
 git pull origin master
 
-echo '切回gitee资源'
+echo'cut back to gitee resource'
 git branch --set-upstream-to=origin/master master
-echo '设置git跟踪资源'
-
+echo'Set up git tracking resources'

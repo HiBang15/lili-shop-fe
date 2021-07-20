@@ -1,4 +1,3 @@
-
 <template>
   <div class="layout">
     <div class="view-width-100" @click="modelNavigateTo(res.list[0])">
@@ -22,20 +21,23 @@
 </template>
 
 <script>
-import { modelNavigateTo } from "./tpl";
+import { modelNavigateTo } from './tpl';
+
 export default {
-  title: "上一下二",
-  props: ["res"],
+  title: 'Up and Down Two',
+  props: ['res'],
   data() {
     return {
-      modelNavigateTo,
+      modelNavigateTo
     };
   },
-  mounted() {},
+  mounted() {
+  }
 };
 </script>
 <style lang="scss" scoped>
 @import "./tpl.scss";
+
 .layout {
   display: flex;
   align-items: center;
@@ -44,29 +46,34 @@ export default {
 
   flex-direction: column;
 }
+
 // img {
-//   width: 100% !important;
-//   height: 85px !important;
-// }
+// width: 100% !important;
+// height: 85px !important;
+//}
 .view-width-100 {
   padding: 1px 0;
   display: flex;
-  height: 200rpx;
+  height: 200 rpx;
   width: 100%;
+
   > img {
     width: 100%;
     height: 100%;
   }
 }
+
 .view-height-85 {
   padding: 0 1px;
   width: 50%;
+
   > img {
     width: 100%;
     height: 100%;
   }
 }
-.image-mode{
+
+.image-mode {
   width: 100%;
 }
 </style>

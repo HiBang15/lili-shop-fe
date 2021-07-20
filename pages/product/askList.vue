@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div v-if="!askGoods.goods_id" class="noMore">
-      暂无信息
+      no information
     </div>
     <div class="askBox" v-else>
       <u-row :gutter="24">
@@ -9,7 +9,7 @@
           <image class="img" :src="queryGoodsDetail.thumbnail"></image>
         </u-col>
         <u-col span="8" @click="goodsDetail()">
-          <h5 style="padding-left:10rpx;">{{queryGoodsDetail.goodsName}}</h5>
+          <h5 style="padding-left:10rpx;">{{ queryGoodsDetail.goodsName }}</h5>
         </u-col>
 
       </u-row>
@@ -19,16 +19,16 @@
         </u-col>
         <u-radio-group v-model="params.anonymous" @change="radioGroupChange">
           <u-radio @change="radioChange">
-            匿名提交
+            Submit anonymously
           </u-radio>
         </u-radio-group>
         <u-col span="12">
           <u-row :gutter="12">
             <u-col :offset="1" span="4">
-              <u-button class="btns" @click="askValue=''">清空</u-button>
+              <u-button class="btns" @click="askValue=''">Clear</u-button>
             </u-col>
             <u-col :offset="2" span="4">
-              <u-button class="btns" @click="getAskMessage()" type="success">提交</u-button>
+              <u-button class="btns" @click="getAskMessage()" type="success">Submit</u-button>
             </u-col>
           </u-row>
         </u-col>
@@ -37,18 +37,19 @@
   </div>
 </template>
 <script>
-import * as API_GOODS from "../../api/goods";
-import * as API_MEM from "../../api/members";
+import * as API_GOODS from '../../api/goods';
+import * as API_MEM from '../../api/members';
+
 export default {
   data() {
     return {
-      askGoods: "",
-      queryGoodsDetail: "",
+      askGoods: '',
+      queryGoodsDetail: '',
       border: true,
       params: {
-        askValue: "",
-        anonymous: "YES",
-      },
+        askValue: '',
+        anonymous: 'YES'
+      }
     };
   },
   onLoad(options) {
@@ -65,69 +66,69 @@ export default {
     },
     getAskMessage() {
       uni.showLoading();
-      if (this.params.askValue == "") {
+      if (this.params.askValue == '') {
         uni.showToast({
-          title: "请填写内容!",
-          icon: "none",
+          title: 'Please fill in the content!',
+          icon: 'none'
         });
         uni.hideLoading();
         return false;
       }
       API_MEM.consultating(
-        this.askGoods.goods_id,
-        this.params.askValue,
-        this.params.anonymous
+          this.askGoods.goods_id,
+          this.params.askValue,
+          this.params.anonymous
       )
-        .then((res) => {
-          if (res.statusCode == 200) {
-            uni.showToast({
-              title: "提交成功!",
-              icon: "none",
-            });
-            this.askValue = "";
-          }
-          uni.hideLoading();
-        })
-        .catch((err) => {
-        
-          uni.hideLoading();
-        });
+          .then((res) => {
+            if (res.statusCode == 200) {
+              uni.showToast({
+                title: 'Submitted successfully!',
+                icon: 'none'
+              });
+              this.askValue = '';
+            }
+            uni.hideLoading();
+          })
+          .catch((err) => {
+
+            uni.hideLoading();
+          });
     },
     radioGroupChange(e) {
-     
+
     },
     radioChange(e) {
-      if (this.anonymous == "YES") {
-        this.anonymous = "NO";
+      if (this.anonymous == 'YES') {
+        this.anonymous = 'NO';
       } else {
-        this.anonymous = "YES";
+        this.anonymous = 'YES';
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped lang="scss">
 .img {
   max-width: 100%;
-  height: 100rpx;
+  height: 100 rpx;
 }
 
 .noMore {
   text-align: center;
-  margin: 40rpx 0;
+  margin: 40 rpx 0;
 }
 
 .askBox {
-  padding: 32rpx;
+  padding: 32 rpx;
 }
 
 /deep/ .u-col {
   text-align: center;
-  padding: 16rpx 0 !important;
+  padding: 16 rpx 0 !important;
 }
 
 .wrapper {
   background: #fff;
-  padding: 32rpx 0;
+  padding: 32 rpx 0;
 }
 </style>

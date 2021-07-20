@@ -1,6 +1,6 @@
-### promotion 促销显示
-### promotion-details 促销详情
-### promotion-assemble-promotions 限时抢购,团购活动条
-### promotion-assemble-group 拼团活动条
-### promotion-assemble-list 拼团活动用户列表
-### promotion-coupon 优惠券组件
+### promotion promotion display
+### promotion-details promotion details
+### promotion-assemble-promotions Limited time panic buying, group buying activity bar
+### promotion-assemble-group promotion-assemble-group
+### promotion-assemble-list Promotion-assemble-list user list
+### promotion-coupon coupon component

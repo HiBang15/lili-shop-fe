@@ -4,36 +4,40 @@
     <view v-for="(prom, index) in Object.keys(res)" :key="index">
       <view>
 
-        <view v-if="prom.split('-')[0] == 'FULL_DISCOUNT'">
+        <view v-if="prom.split('-')[0] =='FULL_DISCOUNT'">
           <div class="res_prom_item" v-if="res[prom].fullMinus">
-            <u-tag text="满减" type="error"></u-tag>
-            <span class="proText">满{{ res[prom].fullMoney }}元，立减现金 <span class="price">{{ res[prom].fullMinus}}元</span></span>
+            <u-tag text="Full minus" type="error"></u-tag>
+            <span class="proText">If you spend {{ res[prom].fullMoney }}, you can get a cash reduction of <span
+                class="price">{{ res[prom].fullMinus }}</span></span>
           </div>
           <div class="res_prom_item" v-if="res[prom].fullRate">
-            <u-tag text="打折" type="error"></u-tag>
-            <span class="proText">满{{ res[prom].fullMoney }}元，立享<span class="price">{{ res[prom].fullRate }}折</span>优惠</span>
+            <u-tag text="Discount" type="error"></u-tag>
+            <span class="proText">If you spend {{ res[prom].fullMoney }}, you can enjoy a <span
+                class="price">{{ res[prom].fullRate }} discount</span> discount</span>
           </div>
         </view>
 
-        <view v-if="prom.split('-')[0] == 'PINTUAN'">
+        <view v-if="prom.split('-')[0] =='PINTUAN'">
 
           <div class="res_prom_item" v-if="res[prom].requiredNum">
-            <u-tag text="拼团" type="error"></u-tag>
-            <span class="proText">{{ res[prom].requiredNum }}人拼团 限购<span class="price">{{ res[prom].limitNum}}件</span></span>
+            <u-tag text="join group" type="error"></u-tag>
+            <span class="proText">{{ res[prom].requiredNum }} people join a group and purchase limited <span
+                class="price">{{ res[prom].limitNum }} pieces</span></span>
           </div>
         </view>
 
-        <view v-if="prom.split('-')[0] == 'SECKILL'">
+        <view v-if="prom.split('-')[0] =='SECKILL'">
           <div class="res_prom_item">
-            <u-tag text="限时抢购" type="error"></u-tag>
-            <span class="proText">限时抢购</span>
+            <u-tag text="Limited time purchase" type="error"></u-tag>
+            <span class="proText">Limited time panic buying</span>
           </div>
         </view>
       </view>
     </view>
-    <view v-if="!res">暂无促销活动</view>
+    <view v-if="!res">No promotions at this time</view>
   </view>
 </template>
+
 <script>
 export default {
   data() {
@@ -44,37 +48,38 @@ export default {
       handler() {
         if (this.res && this.res.length != 0) {
           Object.keys(this.res).forEach((item) => {
-            if (item != "COUPON") {
-              let key = item.split("-")[0];
+            if (item != 'COUPON') {
+              let key = item.split('-')[0];
               this.res[item]._key = key;
             }
           });
         }
       },
 
-      immediate: true,
-    },
+      immediate: true
+    }
   },
 
   props: {
-    // 父组件传递回来的数据
+    // The data passed back by the parent component
     res: {
       type: null,
-      default: "",
-    },
+      default: ''
+    }
   },
-  mounted() {},
-  methods: {},
+  mounted() {
+  },
+  methods: {}
 };
 </script>
 <style lang="scss" scoped>
 .proText {
-  font-size: 26rpx;
+  font-size: 26 rpx;
   font-family: PingFang SC, PingFang SC-Regular;
   font-weight: 400;
   text-align: left;
   color: #333333;
-  margin-left: 20rpx;
+  margin-left: 20 rpx;
 }
 
 .wrapper {
@@ -86,7 +91,7 @@ export default {
 }
 
 .res_prom_item {
-  margin: 20rpx 0;
+  margin: 20 rpx 0;
 }
 
 .price_image {

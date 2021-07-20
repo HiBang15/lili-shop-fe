@@ -1,213 +1,213 @@
 <template>
-	<view v-if="show" class="u-badge" :class="[
-			isDot ? 'u-badge-dot' : '', 
-			size == 'mini' ? 'u-badge-mini' : '',
-			type ? 'u-badge--bg--' + type : ''
-		]" :style="[{
-			top: offset[0] + 'rpx',
-			right: offset[1] + 'rpx',
-			fontSize: fontSize + 'rpx',
-			position: absolute ? 'absolute' : 'static',
-			color: color,
-			backgroundColor: bgColor
-		}, boxStyle]"
-	>
-		{{showText}}
-	</view>
+  <view v-if="show" class="u-badge" :class="[
+isDot?'u-badge-dot':'',
+size =='mini'?'u-badge-mini':'',
+type?'u-badge--bg--' + type:''
+]" :style="[{
+top: offset[0] +'rpx',
+right: offset[1] +'rpx',
+fontSize: fontSize +'rpx',
+position: absolute?'absolute':'static',
+color: color,
+backgroundColor: bgColor
+}, boxStyle]"
+  >
+    {{ showText }}
+  </view>
 </template>
 
 <script>
-	/**
-	 * badge 角标
-	 * @description 本组件一般用于展示头像的地方，如个人中心，或者评论列表页的用户头像展示等场所。
-	 * @tutorial https://www.uviewui.com/components/badge.html
-	 * @property {String Number} count 展示的数字，大于 overflowCount 时显示为 ${overflowCount}+，为0且show-zero为false时隐藏
-	 * @property {Boolean} is-dot 不展示数字，只有一个小点（默认false）
-	 * @property {Boolean} absolute 组件是否绝对定位，为true时，offset参数才有效（默认true）
-	 * @property {String Number} overflow-count 展示封顶的数字值（默认99）
-	 * @property {String} type 使用预设的背景颜色（默认error）
-	 * @property {Boolean} show-zero 当数值为 0 时，是否展示 Badge（默认false）
-	 * @property {String} size Badge的尺寸，设为mini会得到小一号的Badge（默认default）
-	 * @property {Array} offset 设置badge的位置偏移，格式为 [x, y]，也即设置的为top和right的值，单位rpx。absolute为true时有效（默认[20, 20]）
-	 * @property {String} color 字体颜色（默认#ffffff）
-	 * @property {String} bgColor 背景颜色，优先级比type高，如设置，type参数会失效
-	 * @property {Boolean} is-center 组件中心点是否和父组件右上角重合，优先级比offset高，如设置，offset参数会失效（默认false）
-	 * @example <u-badge type="error" count="7"></u-badge>
-	 */
-	export default {
-		name: 'u-badge',
-		props: {
-			// primary,warning,success,error,info
-			type: {
-				type: String,
-				default: 'error'
-			},
-			// default, mini
-			size: {
-				type: String,
-				default: 'default'
-			},
-			//是否是圆点
-			isDot: {
-				type: Boolean,
-				default: false
-			},
-			// 显示的数值内容
-			count: {
-				type: [Number, String],
-			},
-			// 展示封顶的数字值
-			overflowCount: {
-				type: Number,
-				default: 99
-			},
-			// 当数值为 0 时，是否展示 Badge
-			showZero: {
-				type: Boolean,
-				default: false
-			},
-			// 位置偏移
-			offset: {
-				type: Array,
-				default: () => {
-					return [20, 20]
-				}
-			},
-			// 是否开启绝对定位，开启了offset才会起作用
-			absolute: {
-				type: Boolean,
-				default: true
-			},
-			// 字体大小
-			fontSize: {
-				type: [String, Number],
-				default: '24'
-			},
-			// 字体演示
-			color: {
-				type: String,
-				default: '#ffffff'
-			},
-			// badge的背景颜色
-			bgColor: {
-				type: String,
-				default: ''
-			},
-			// 是否让badge组件的中心点和父组件右上角重合，配置的话，offset将会失效
-			isCenter: {
-				type: Boolean,
-				default: false
-			}
-		},
-		computed: {
-			// 是否将badge中心与父组件右上角重合
-			boxStyle() {
-				let style = {};
-				if(this.isCenter) {
-					style.top = 0;
-					style.right = 0;
-					// Y轴-50%，意味着badge向上移动了badge自身高度一半，X轴50%，意味着向右移动了自身宽度一半
-					style.transform = "translateY(-50%) translateX(50%)";
-				} else {
-					style.top = this.offset[0] + 'rpx';
-					style.right = this.offset[1] + 'rpx';
-					style.transform = "translateY(0) translateX(0)";
-				}
-				// 如果尺寸为mini，后接上scal()
-				if(this.size == 'mini') {
-					style.transform = style.transform + " scale(0.8)";
-				}
-				return style;
-			},
-			// isDot类型时，不显示文字
-			showText() {
-				if(this.isDot) return '';
-				else {
-					if(this.count > this.overflowCount) return `${this.overflowCount}+`;
-					else return this.count;
-				}
-			},
-			// 是否显示组件
-			show() {
-				// 如果count的值为0，并且showZero设置为false，不显示组件
-				if(this.count == 0 && this.showZero == false) return false;
-				else return true;
-			}
-		}
-	}
+/**
+ * badge corner
+ * @description This component is generally used in places where the avatar is displayed, such as the personal center, or the user avatar display on the comment list page.
+ * @tutorial https://www.uviewui.com/components/badge.html
+ * The number displayed by @property {String Number} count is displayed as ${overflowCount}+ when it is greater than overflowCount, hidden when it is 0 and show-zero is false
+ * @property {Boolean} is-dot does not display numbers, only a small dot (default false)
+ * @property {Boolean} absolute Whether the component is positioned absolutely, when it is true, the offset parameter is valid (default true)
+ * @property {String Number} overflow-count displays the capped number value (default 99)
+ * @property {String} type use the preset background color (default error)
+ * @property {Boolean} show-zero When the value is 0, whether to show Badge (default false)
+ * @property {String} size Badge size, set to mini will get one size smaller Badge (default default)
+ * @property {Array} offset Set the position offset of the badge, the format is [x, y], that is, the value of top and right is set, and the unit is rpx. Valid when absolute is true (default [20, 20])
+ * @property {String} color font color (default #ffffff)
+ * @property {String} bgColor background color, priority is higher than type, if set, type parameter will be invalid
+ * @property {Boolean} is-center Whether the center point of the component coincides with the upper right corner of the parent component, the priority is higher than offset, if set, the offset parameter will be invalid (default false)
+ * @example <u-badge type="error" count="7"></u-badge>
+ */
+export default {
+  name: 'u-badge',
+  props: {
+// primary,warning,success,error,info
+    type: {
+      type: String,
+      default: 'error'
+    },
+// default, mini
+    size: {
+      type: String,
+      default: 'default'
+    },
+//Is it a dot
+    isDot: {
+      type: Boolean,
+      default: false
+    },
+// Displayed value content
+    count: {
+      type: [Number, String]
+    },
+// Show the capped numeric value
+    overflowCount: {
+      type: Number,
+      default: 99
+    },
+// When the value is 0, whether to display Badge
+    showZero: {
+      type: Boolean,
+      default: false
+    },
+// position offset
+    offset: {
+      type: Array,
+      default: () => {
+        return [20, 20];
+      }
+    },
+// Whether to enable absolute positioning, it will work only when offset is enabled
+    absolute: {
+      type: Boolean,
+      default: true
+    },
+    // font size
+    fontSize: {
+      type: [String, Number],
+      default: '24'
+    },
+// Font demo
+    color: {
+      type: String,
+      default: '#ffffff'
+    },
+// The background color of the badge
+    bgColor: {
+      type: String,
+      default: ''
+    },
+// Whether to make the center point of the badge component coincide with the upper right corner of the parent component, if configured, the offset will be invalid
+    isCenter: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+// Whether to overlap the center of the badge with the upper right corner of the parent component
+    boxStyle() {
+      let style = {};
+      if (this.isCenter) {
+        style.top = 0;
+        style.right = 0;
+// The Y-axis -50% means that the badge has moved up half of its height, and the X-axis 50% means that it has moved half of its width to the right
+        style.transform = 'translateY(-50%) translateX(50%)';
+      } else {
+        style.top = this.offset[0] + 'rpx';
+        style.right = this.offset[1] + 'rpx';
+        style.transform = 'translateY(0) translateX(0)';
+      }
+// If the size is mini, followed by scal()
+      if (this.size == 'mini') {
+        style.transform = style.transform + 'scale(0.8)';
+      }
+      return style;
+    },
+// When isDot type, no text is displayed
+    showText() {
+      if (this.isDot) return '';
+      else {
+        if (this.count > this.overflowCount) return `${ this.overflowCount }+`;
+        else return this.count;
+      }
+    },
+// Whether to display the component
+    show() {
+// If the value of count is 0 and showZero is set to false, the component is not displayed
+      if (this.count == 0 && this.showZero == false) return false;
+      else return true;
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-	@import "../../libs/css/style.components.scss";
-	
-	.u-badge {
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		line-height: 24rpx;
-		padding: 4rpx 8rpx;
-		border-radius: 100rpx;
-		
-		&--bg--primary {
-			background-color: $u-type-primary;
-		}
-		
-		&--bg--error {
-			background-color: $u-type-error;
-		}
-		
-		&--bg--success {
-			background-color: $u-type-success;
-		}
-		
-		&--bg--info {
-			background-color: $u-type-info;
-		}
-		
-		&--bg--warning {
-			background-color: $u-type-warning;
-		}
-	}
-	
-	.u-badge-dot {
-		height: 16rpx;
-		width: 16rpx;
-		border-radius: 100rpx;
-		line-height: 1;
-	}
-	
-	.u-badge-mini {
-		transform: scale(0.8);
-		transform-origin: center center;
-	}
-	
-	// .u-primary {
-	// 	background: $u-type-primary;
-	// 	color: #fff;
-	// }
-	
-	// .u-error {
-	// 	background: $u-type-error;
-	// 	color: #fff;
-	// }
-	
-	// .u-warning {
-	// 	background: $u-type-warning;
-	// 	color: #fff;
-	// }
-	
-	// .u-success {
-	// 	background: $u-type-success;
-	// 	color: #fff;
-	// }
-	
-	// .u-black {
-	// 	background: #585858;
-	// 	color: #fff;
-	// }
-	
-	.u-info {
-		background: $u-type-info;
-		color: #fff;
-	}
+@import "../../libs/css/style.components.scss";
+
+.u-badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 24 rpx;
+  padding: 4 rpx 8 rpx;
+  border-radius: 100 rpx;
+
+  &--bg--primary {
+    background-color: $u-type-primary;
+  }
+
+  &--bg--error {
+    background-color: $u-type-error;
+  }
+
+  &--bg--success {
+    background-color: $u-type-success;
+  }
+
+  &--bg--info {
+    background-color: $u-type-info;
+  }
+
+  &--bg--warning {
+    background-color: $u-type-warning;
+  }
+}
+
+.u-badge-dot {
+  height: 16 rpx;
+  width: 16 rpx;
+  border-radius: 100 rpx;
+  line-height: 1;
+}
+
+.u-badge-mini {
+  transform: scale(0.8);
+  transform-origin: center center;
+}
+
+// .u-primary {
+// 	background: $u-type-primary;
+// 	color: #fff;
+// }
+
+// .u-error {
+// 	background: $u-type-error;
+// 	color: #fff;
+// }
+
+// .u-warning {
+// 	background: $u-type-warning;
+// 	color: #fff;
+// }
+
+// .u-success {
+// 	background: $u-type-success;
+// 	color: #fff;
+// }
+
+// .u-black {
+// 	background: #585858;
+// 	color: #fff;
+// }
+
+.u-info {
+  background: $u-type-info;
+  color: #fff;
+}
 </style>

@@ -2,60 +2,66 @@
   <view class="comment">
     <view class="top-tab">
       <view class="tab-btn" :v-if="commentDetail">
-        <view @click="select(0)" :class="{ cur: selectIndex == 0 }">全部</view>
-        <view @click="select(1)" :class="{ cur: selectIndex == 1 }">好评{{ commentDetail.good }}</view>
-        <view @click="select(2)" :class="{ cur: selectIndex == 2 }">中评{{ commentDetail.moderate }}</view>
-        <view @click="select(3)" :class="{ cur: selectIndex == 3 }">差评{{ commentDetail.worse }}</view>
-        <view @click="select(4)" :class="{ cur: selectIndex == 4 }">有图{{ commentDetail.haveImage }}</view>
+        <view @click="select(0)" :class="{ cur: selectIndex == 0 }">All</view>
+        <view @click="select(1)" :class="{ cur: selectIndex == 1 }">Praise {{ commentDetail.good }}</view>
+        <view @click="select(2)" :class="{ cur: selectIndex == 2 }">Medium comment {{ commentDetail.moderate }}</view>
+        <view @click="select(3)" :class="{ cur: selectIndex == 3 }">Bad review{{ commentDetail.worse }}</view>
+        <view @click="select(4)" :class="{ cur: selectIndex == 4 }">There are pictures{{
+            commentDetail.haveImage
+          }}
+        </view>
       </view>
     </view>
-    <!-- 评价 -->
+    <!-- Evaluation -->
     <div class="goodsBoxOver">
       <div class="scoll-page">
         <view class="eva-section">
-          <div class="empty" v-if="commDetail.length < 1">
+          <div class="empty" v-if="commDetail.length <1">
             <view>
-              <u-empty mode="message" text="赞无评论"></u-empty>
+              <u-empty mode="message" text="Like no comment"></u-empty>
             </view>
           </div>
           <view class="eva-box" v-for="(item, index) in commDetail" :key="index">
             <view class="section-info">
-              <image class="portrait" :src="item.memberProfile || '/static/missing-face.png'" mode="aspectFill"></image>
+              <image class="portrait" :src="item.memberProfile ||'/static/missing-face.png'" mode="aspectFill"></image>
               <view class="star-content">
                 <text class="name">{{ item.memberName | noPassByName }}</text>
                 <text class="time">{{ item.createTime }}</text>
               </view>
               <view class="stars">
-                <text :class="{ star: item.deliveryScore > 0 }"></text>
-                <text :class="{ star: item.deliveryScore > 1 }"></text>
-                <text :class="{ star: item.deliveryScore > 2 }"></text>
-                <text :class="{ star: item.deliveryScore > 3 }"></text>
-                <text :class="{ star: item.deliveryScore > 4 }"></text>
+                <text :class="{ star: item.deliveryScore> 0 }"></text>
+                <text :class="{ star: item.deliveryScore> 1 }"></text>
+                <text :class="{ star: item.deliveryScore> 2 }"></text>
+                <text :class="{ star: item.deliveryScore> 3 }"></text>
+                <text :class="{ star: item.deliveryScore> 4 }"></text>
               </view>
             </view>
             <view class="section-contant">
               <div class="content">{{ item.content }}</div>
               <view class="img">
-                <!-- 循环出用户评价的图片 -->
-                <u-image width="140rpx" height="140rpx" v-if="item.images" v-for="(img, i) in splitImg(item.images)" :src="img" :key="i" @click="preview(splitImg(item.images), i)">
+                <!-- Loop out the pictures of user reviews -->
+                <u-image width="140rpx" height="140rpx" v-if="item.images" v-for="(img, i) in splitImg(item.images)"
+                         :src="img" :key="i" @click="preview(splitImg(item.images), i)">
                 </u-image>
               </view>
               <view class="bot">
-                <text class="attr">{{ item.goodsName }} - {{ gradeList[item.grade] }}</text>
+                <text class="attr">{{ item.goodsName }}-{{ gradeList[item.grade] }}</text>
               </view>
             </view>
             <view class="commentStyle" v-if="item.reply">
-              商家回复：
+              Merchant reply:
               <span class="addCommentSpan">{{ item.reply }}</span>
               <view class="img">
-                <!-- 循环出商家回复评价的图片 -->
-                <u-image width="140rpx" height="140rpx" v-if="item.replyImage" v-for="(replyImg, replyIndex) in splitImg(item.replyImage)" :src="replyImg" :key="replyIndex"
-                  @click="preview(splitImg( item.replyImage), index)">
+                <!-- Circulate out the pictures of merchants replying to reviews -->
+                <u-image width="140rpx" height="140rpx" v-if="item.replyImage"
+                         v-for="(replyImg, replyIndex) in splitImg(item.replyImage)" :src="replyImg" :key="replyIndex"
+                         @click="preview(splitImg( item.replyImage), index)">
                 </u-image>
               </view>
             </view>
           </view>
-          <u-loadmore bg-color="transparent" style="margin:40rpx 0" :status="status" @loadmore="loadmore()" icon-type="iconType" />
+          <u-loadmore bg-color="transparent" style="margin:40rpx 0" :status="status" @loadmore="loadmore()"
+                      icon-type="iconType" />
         </view>
       </div>
     </div>
@@ -64,29 +70,29 @@
 
 <script>
 // import { getGoodsDetail } from '@/api/goods.js';
-import * as membersApi from "@/api/members.js";
+import * as membersApi from '@/api/members.js';
 
 export default {
   data() {
     return {
-      status: "loadmore", //底部刷新状态
-      commentDetail: "", //评价详情
-      selectIndex: "0", //检索条件
-      params: {  // 评论分页提交数据
+      status: 'loadmore', //Refresh status at the bottom
+      commentDetail: '', //review details
+      selectIndex: '0', //Search conditions
+      params: {// Comment page submission data
         pageNumber: 1,
         pageSize: 10,
-        grade: "",
+        grade: ''
       },
       gradeList: {
-        GOOD: "好评",
-        MODERATE: "中评",
-        WORSE: "差评",
-        HAVEIMAGE: "有图",
+        GOOD: 'Very Good',
+        MODERATE: 'Intermediate Review',
+        WORSE: 'Bad review',
+        HAVEIMAGE: 'There are pictures'
       },
-      // 评论详情
+      // Comment details
       commDetail: [],
-      dataTotal: 0, //评论的总total数量
-      opid: "", //上级传参id
+      dataTotal: 0, //Total total number of comments
+      opid: '' //Upper-level parameter id
     };
   },
   async onLoad(options) {
@@ -94,9 +100,9 @@ export default {
     this.getGoodsCommentsNum(options.id);
     this.opid = options.id;
   },
-  
+
   /**
-   * 触底加载
+   * Bottom loading
    */
   onReachBottom() {
     this.params.pageNumber++;
@@ -105,11 +111,11 @@ export default {
 
   methods: {
     /**
-     * 切割图像
+     * Cut image
      */
     splitImg(val) {
-      if (val && val.split(",")) {
-        return val.split(",");
+      if (val && val.split(',')) {
+        return val.split(',');
       } else if (val) {
         return val;
       } else {
@@ -118,28 +124,28 @@ export default {
     },
 
     /**
-     * 获取商品评论
+     * Get product reviews
      */
     getGoodsCommentsFun(id) {
-      this.status = "loading";
+      this.status = 'loading';
       // getGoodsComments
       membersApi.getGoodsComments(id, this.params).then((res) => {
         if (
-          res.data.result.records == [] ||
-          res.data.result.records == "" ||
-          res.data.result.records == null
+            res.data.result.records == [] ||
+            res.data.result.records == '' ||
+            res.data.result.records == null
         ) {
-          this.status = "noMore";
+          this.status = 'noMore';
           return false;
         }
         this.commDetail = this.commDetail.concat(res.data.result.records);
         this.dataTotal = res.data.result.total;
-        this.status = "loadmore";
+        this.status = 'loadmore';
       });
     },
 
     /**
-     * 获取商品评论数
+     * Get the number of product reviews
      */
     getGoodsCommentsNum(id) {
       membersApi.getGoodsCommentsCount(id).then((res) => {
@@ -150,13 +156,13 @@ export default {
     },
 
     /**
-     * 顶部筛选条件
+     * Top filter
      */
     select(index) {
       this.selectIndex = index;
-      this.params.grade = ["", "GOOD", "MODERATE", "WORSE", ""][
-        this.selectIndex
-      ];
+      this.params.grade = ['', 'GOOD', 'MODERATE', 'WORSE', ''][
+          this.selectIndex
+          ];
       this.selectIndex == 4 ? (this.params.haveImage = 1) : true;
       this.params.pageNumber = 1;
       this.params.pageSize = 10;
@@ -165,59 +171,60 @@ export default {
         this.params = {
           pageNumber: 1,
           pageSize: 10,
-          grade: "",
+          grade: ''
         };
       }
-      // 重新加载评论
+      // Reload comments
       this.getGoodsCommentsFun(this.opid);
     },
 
     /**
-     * 点击图片放大或保存
+     * Click the picture to enlarge or save
      */
     preview(urls, index) {
       uni.previewImage({
         current: index,
         urls: urls,
         longPressActions: {
-          itemList: ["保存图片"],
+          itemList: ['Save Picture'],
           success: function (data) {
             uni.showToast({
-              title: "保存成功",
+              title: 'Saved successfully',
               duration: 2000,
-              icon: "none",
+              icon: 'none'
             });
           },
           fail: function (err) {
             uni.showToast({
-              title: "保存失败",
+              title: 'Save failed',
               duration: 2000,
-              icon: "none",
+              icon: 'none'
             });
-          },
-        },
+          }
+        }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .commentStyle {
-  margin-top: 16rpx;
-  padding: 14rpx 26rpx;
+  margin-top: 16 rpx;
+  padding: 14 rpx 26 rpx;
   background: #f5f5f5;
   border-radius: 6px;
-  font-size: 22rpx;
+  font-size: 22 rpx;
   font-weight: 700;
   text-align: left;
-  line-height: 40rpx;
+  line-height: 40 rpx;
 }
 
 .addCommentSpan {
   color: $u-tips-color !important;
-  padding-left: 20rpx;
+  padding-left: 20 rpx;
 }
+
 .img {
   display: flex;
   flex-wrap: wrap;
@@ -225,12 +232,12 @@ export default {
   overflow: hidden;
 
   image {
-    width: 166rpx;
-    height: 166rpx;
-    margin: 0 15rpx 15rpx 0;
+    width: 166 rpx;
+    height: 166 rpx;
+    margin: 0 15 rpx 15 rpx 0;
 
     &:nth-of-type(3n + 0) {
-      margin: 0 0 15rpx 0;
+      margin: 0 0 15 rpx 0;
     }
   }
 }
@@ -242,6 +249,7 @@ export default {
 page {
   background: #f7f7f7;
 }
+
 .comment {
   color: #333;
   background: #f7f7f7;
@@ -250,27 +258,27 @@ page {
 
   .top-tab {
     background: #fff;
-    margin-bottom: 10rpx;
-    border-radius: 20rpx;
+    margin-bottom: 10 rpx;
+    border-radius: 20 rpx;
     display: flex;
     flex-direction: column;
-    padding: 0 30rpx 0 30rpx;
-    font-size: 24rpx;
+    padding: 0 30 rpx 0 30 rpx;
+    font-size: 24 rpx;
 
     .tab-btn {
-      margin-top: 20rpx;
+      margin-top: 20 rpx;
       display: flex;
       flex-wrap: wrap;
 
       view {
-        min-width: 118rpx;
+        min-width: 118 rpx;
         text-align: center;
-        height: 50rpx;
-        line-height: 50rpx;
-        padding: 0 10rpx;
+        height: 50 rpx;
+        line-height: 50 rpx;
+        padding: 0 10 rpx;
         background: #f8f8fe;
-        border-radius: 25rpx;
-        margin: 0 20rpx 30rpx 0;
+        border-radius: 25 rpx;
+        margin: 0 20 rpx 30 rpx 0;
 
         &.cur {
           background: $aider-light-color;
@@ -281,13 +289,13 @@ page {
   }
 
   .eva-section {
-    padding: 20rpx 0;
+    padding: 20 rpx 0;
 
     .eva-box {
-      padding: 40rpx;
-      margin-bottom: 10rpx;
+      padding: 40 rpx;
+      margin-bottom: 10 rpx;
       background: #fff;
-      border-radius: 20rpx;
+      border-radius: 20 rpx;
       /* star */
       .star-content {
         display: flex;
@@ -300,7 +308,7 @@ page {
         }
 
         .time {
-          font-size: 24rpx;
+          font-size: 24 rpx;
           color: #999;
         }
       }
@@ -315,31 +323,33 @@ page {
           align-items: center;
 
           .star {
-            width: 30rpx;
-            height: 30rpx;
+            width: 30 rpx;
+            height: 30 rpx;
             background: url("/static/star.png");
             background-size: 100%;
           }
         }
+
         .portrait {
           flex-shrink: 0;
-          width: 80rpx;
-          height: 80rpx;
+          width: 80 rpx;
+          height: 80 rpx;
           border-radius: 100px;
-          margin-right: 20rpx;
+          margin-right: 20 rpx;
         }
       }
+
       .section-contant {
         display: flex;
         flex-direction: column;
 
         .content {
-          font-size: 24rpx;
-          line-height: 46rpx;
+          font-size: 24 rpx;
+          line-height: 46 rpx;
           font-weight: 400;
           color: $font-color-dark;
           color: #333;
-          padding: 26rpx 0;
+          padding: 26 rpx 0;
         }
 
         .img {
@@ -347,8 +357,9 @@ page {
           flex-wrap: wrap;
           /* height: 140rpx; */
           overflow: hidden;
+
           > * {
-            margin-right: 16rpx;
+            margin-right: 16 rpx;
           }
         }
 
@@ -357,9 +368,9 @@ page {
           justify-content: space-between;
           font-size: $font-sm;
           color: $font-color-light;
-          margin-top: 20rpx;
+          margin-top: 20 rpx;
 
-       
+
         }
       }
     }
@@ -367,7 +378,7 @@ page {
 }
 
 .empty {
-  padding-top: 300rpx;
+  padding-top: 300 rpx;
   color: #999999;
   text-align: center;
 }

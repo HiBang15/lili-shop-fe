@@ -8,23 +8,23 @@
 </template>
 <script>
 export default {
-  title:"搜索栏",
-  props: ["res"],
+  title: 'Search Bar',
+  props: ['res'],
   methods: {
     handleSearch() {
       uni.navigateTo({
-        url: "/pages/navigation/search/searchPage",
+        url: '/pages/navigation/search/searchPage'
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
 @import "./tpl.scss";
 
 .search {
-  height: 64rpx;
-  border-radius: 10rpx;
+  height: 64 rpx;
+  border-radius: 10 rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,6 +33,6 @@ export default {
 
 .layout {
   background: #fff;
-  padding: 0 16rpx;
+  padding: 0 16 rpx;
 }
 </style>

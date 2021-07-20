@@ -1,36 +1,36 @@
 <template>
   <view class="store-page">
     <view class="status_bar">
-      <!-- 这里是状态栏 -->
+      <!-- Here is the status bar -->
     </view>
     <view class="header">
       <div class="search">
         <u-icon @click="back" style="margin:0 10rpx 0;" name="arrow-left" size="40" color="#fff"></u-icon>
-        <u-search :show-action="false" border-color="#fff" bg-color="#fff" v-model="keyword" @search="search" placeholder="请输入搜索" />
+        <u-search :show-action="false" border-color="#fff" bg-color="#fff" v-model="keyword" @search="search" placeholder="Please enter search" />
         <u-icon @click="shareChange()" style="margin:0 10rpx 0;" name="share-fill" size="40" color="#fff"></u-icon>
       </div>
       <view class="tab-header">
-        <text :class="{ cur: tabIndex == 0 }" @click="checkNavigation(0)">首页</text>
-        <text :class="{ cur: tabIndex == 1 }" @click="checkNavigation(1)">商品</text>
+        <text :class="{ cur: tabIndex == 0 }" @click="checkNavigation(0)">Home</text>
+        <text :class="{ cur: tabIndex == 1 }" @click="checkNavigation(1)">Products</text>
       </view>
     </view>
     <swiper :current="tabIndex" class="swiper-box" @change="tabChange">
       <swiper-item class="swiper-item" v-for="(item, index) in indexCats" :key="index">
         <scroll-view class="scroll-v" scroll-anchoring enableBackToTop="true" scroll-y @refresherrefresh="refresh()" @scroll="pageScroll">
           <storePageMain :load="load" :storeId="storeId" v-if="index == 0"></storePageMain>
-          <storePageGoods :load="load"  :categoryId="item" :storeId="storeId" v-if="index == 1"></storePageGoods>
+          <storePageGoods :load="load" :categoryId="item" :storeId="storeId" v-if="index == 1"></storePageGoods>
         </scroll-view>
       </swiper-item>
     </swiper>
 
-    <!-- 分享 -->
+    <!-- Share -->
     <shares type="shops" :link="'/pages/product/shopPage?id='+ this.storeId" v-if="shareFlage" @close="shareFlage = false" />
 
   </view>
 </template>
 
 <script>
-import shares from "@/components/m-share/index"; //分享
+import shares from "@/components/m-share/index"; //Share
 import storePageMain from "./shopPageMain.vue";
 import storePageGoods from "./shopPageGoods.vue";
 export default {
@@ -41,19 +41,19 @@ export default {
   },
   data() {
     return {
-      shareFlage: false, //分享share
-      tabIndex: 0, //默认为第一个tab
-      keyword: "", //搜索关键字
+      shareFlage: false, //share share
+      tabIndex: 0, //The default is the first tab
+      keyword: "", //Search keywords
       load: false,
-      storeId: undefined, //店铺id
-      indexCats: [0, 1],  //默认为2个tab
-      loadIndex: 1, //加载的距离
-   
+      storeId: undefined, //store id
+      indexCats: [0, 1], //The default is 2 tabs
+      loadIndex: 1, //load distance
+
     };
   },
 
   /**
-   * 加载 
+   * Load
    */
   async onLoad(options) {
     this.storeId = options.id;
@@ -61,19 +61,19 @@ export default {
   },
   mounted() {
     // #ifdef MP-WEIXIN
-    // 小程序默认分享
+    // Mini Programs are shared by default
     uni.showShareMenu({ withShareTicket: true });
     // #endif
   },
 
   methods: {
-    // 点击分享
+    // Click to share
     async shareChange() {
       this.shareFlage = true;
     },
 
     /**
-     * 搜索
+     * search for
      */
     search() {
       uni.navigateTo({
@@ -82,17 +82,17 @@ export default {
     },
 
     /**
-     * 下滑加载
+     * Slide down loading
      */
     pageScroll(e) {
-      if (e.detail.scrollTop > 300 * this.loadIndex) {
+      if (e.detail.scrollTop> 300 * this.loadIndex) {
         this.loadIndex++;
         this.load = this.loadIndex;
       }
     },
 
     /**
-     * 返回
+     * Return
      */
     back() {
       if (getCurrentPages().length == 1) {
@@ -105,14 +105,14 @@ export default {
     },
 
     /**
-     * 点击导航栏
+     * Click on the navigation bar
      */
     checkNavigation(index) {
       this.tabIndex = index;
     },
 
     /**
-     * 滑动回调
+     * Sliding callback
      */
     tabChange(e) {
       this.tabIndex = e.detail.current;

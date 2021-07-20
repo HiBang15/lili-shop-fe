@@ -9,7 +9,7 @@
 import { modelNavigateTo } from "./tpl";
 
 export default {
-  title: "单行图片模块",
+  title: "Single line image module",
   data() {
     return {
       modelNavigateTo,

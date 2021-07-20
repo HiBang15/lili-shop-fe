@@ -1,5 +1,5 @@
 {
-    "name" : "lili商城",
+    "name" : "lili mall",
     "appid" : "__UNI__C100675",
     "description" : "",
     "versionName" : "4.0.23",
@@ -7,7 +7,7 @@
     "transformPx" : false,
     "app-plus" : {
         "compatible" : {
-            "ignoreVersion" : true //true表示忽略版本检查提示框，HBuilderX1.9.0及以上版本支持  
+            "ignoreVersion" : true //true means ignoring the version check prompt box, supported by HBuilderX1.9.0 and above
         },
         /* 5+App特有相关 */
         "usingComponents" : true,
@@ -68,11 +68,11 @@
             "ios" : {
                 "idfa" : false,
                 "privacyDescription" : {
-                    "NSPhotoLibraryUsageDescription" : "需要用与评论上传，头像上传功能",
-                    "NSPhotoLibraryAddUsageDescription" : "保存商品图片到本地",
-                    "NSFaceIDUsageDescription" : "使用面部识别进行登录",
-                    "NSCameraUsageDescription" : "需要用与扫描二维码和商品评论图片拍摄",
-                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "位置信息将用于高德地图的效果展示"
+                    "NSPhotoLibraryUsageDescription": "Need to use and comment upload, avatar upload function",
+                     "NSPhotoLibraryAddUsageDescription": "Save the product picture locally",
+                     "NSFaceIDUsageDescription": "Use facial recognition to log in",
+                     "NSCameraUsageDescription": "Need to use and scan the QR code and product review pictures to shoot",
+                     "NSLocationAlwaysAndWhenInUseUsageDescription": "The location information will be used to display the effect of AutoNavi Map"
                 },
                 "urltypes" : "lilishop"
             },
@@ -190,7 +190,7 @@
         },
         "permission" : {
             "scope.userLocation" : {
-                "desc" : "位置信息将用于高德地图的效果展示"
+                "desc" : "Location information will be used to display the effect of Gaode map"
             }
         },
         "plugins" : {

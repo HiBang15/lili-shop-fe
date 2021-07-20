@@ -10,76 +10,76 @@ const FINGER_LOGIN = isDev ? "finger_login_dev" : "finger_login";
 const CART_BACKBTN = isDev ? "cart_backbtn_dev" : "cart_backbtn";
 export default {
 
-  // 获取face id登录
+  // Get face id login
   getFaceLogin() {
     return uni.getStorageSync(FACE_LOGIN);
   },
-  // 写入face id
+  // write face id
   setFaceLogin(val) {
     uni.setStorageSync(FACE_LOGIN, val);
   },
-  // 获取指纹登录
+  // Get fingerprint login
   getFingerLogin() {
     return uni.getStorageSync(FINGER_LOGIN);
   },
-  // 写入指纹登录
+  // Write fingerprint login
   setFingerLogin(val) {
     uni.setStorageSync(FINGER_LOGIN, val);
   },
-  // 写入用户信息
+  // Write user information
   setUserInfo(val) {
     uni.setStorageSync(USER_INFO, val);
   },
-  // 获取用户信息
+  // Get user information
   getUserInfo() {
     return uni.getStorageSync(USER_INFO);
   },
-  // 写入uuid
+  // write uuid
   setUuid(val) {
     uni.setStorageSync(UUID, val);
   },
-  // 获取uuid
+  // Get uuid
   getUuid() {
     return uni.getStorageSync(UUID);
   },
-  // 写入登录
+  // write login
   setHasLogin(val) {
     uni.setStorageSync(HAS_LOGIN, val);
   },
-  // 获取是否登录
+  // Get whether to log in
   getHasLogin() {
     return uni.getStorageSync(HAS_LOGIN);
   },
-  // 删除uuid
+  // delete uuid
   removeUuid() {
     uni.removeStorageSync(UUID);
   },
-  // 写入accessToken
+  // write accessToken
   setAccessToken(val) {
     uni.setStorageSync(ACCESS_TOKEN, val);
   },
-  // 获取accessToken
+  // Get accessToken
   getAccessToken() {
     return uni.getStorageSync(ACCESS_TOKEN);
   },
-  // 后退购物车
+  // Back to shopping cart
   setCartBackbtn(val) {
     uni.setStorageSync(CART_BACKBTN, val);
   },
 
-  // 删除token
+  // delete token
   removeAccessToken() {
     uni.removeStorageSync(ACCESS_TOKEN);
   },
-  // 写入刷新token
+  // Write refresh token
   setRefreshToken(val) {
     uni.setStorageSync(REFRESH_TOKEN, val);
   },
-  // 获取刷新token
+  // Get refresh token
   getRefreshToken() {
     return uni.getStorageSync(REFRESH_TOKEN);
   },
-  // 删除token
+  // delete token
   removeRefreshToken() {
     uni.removeStorageSync(REFRESH_TOKEN);
   },

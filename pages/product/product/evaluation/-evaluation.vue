@@ -3,11 +3,11 @@
     <view class="eva-section" @click="toComment(goodsDetail.goodsId, goodsDetail.grade)">
       <view class="e-header">
 
-        <view class="evaluate-title">评价</view>
+        <view class="evaluate-title">evaluation</view>
         <text class="evaluate-num">{{ commDetail.total || '0' }}+</text>
-        <text class="tip">好评率 {{ grade || '100' }}%</text>
+        <text class="tip">Praise rate {{ grade || '100' }}%</text>
       </view>
-      <div v-if="commDetail && commDetail.records && commDetail.records.length > 0">
+      <div v-if="commDetail && commDetail.records && commDetail.records.length> 0">
         <view class="eva-box" v-for="(commItem,commIndex) in commDetail.records.slice(0,2)" :key="commIndex">
           <view class="section-info">
             <u-avatar mode="circle" size="60" class="portrait" :src="commItem.memberProfile"></u-avatar>
@@ -21,8 +21,9 @@
             </u-read-more>
             <scroll-view scroll-x class="scroll-x" v-if="commItem.image">
               <view class="img">
-                <u-image border-radius="12" class="commImg" width="160rpx" height="160rpx" v-for="(item, index) in commItem.image.split(',')" :src="item" :key="index"
-                  @click.stop="previewImg(commItem.image, index)"></u-image>
+                <u-image border-radius="12" class="commImg" width="160rpx" height="160rpx"
+                         v-for="(item, index) in commItem.image.split(',')" :src="item" :key="index"
+                         @click.stop="previewImg(commItem.image, index)"></u-image>
               </view>
             </scroll-view>
             <view class="bot">
@@ -33,38 +34,40 @@
       </div>
 
       <div v-else class="goodsNoMore">
-        <u-empty text="该商品暂无评论" mode="message"></u-empty>
+        <u-empty text="There are currently no reviews for this product" mode="message"></u-empty>
       </div>
     </view>
-    <!-- 查看全部评价按钮 -->
-    <view v-if="commDetail && commDetail.records && commDetail.records.length > 0" class="eva-section-btn" @click="toComment(goodsDetail.goodsId, goodsDetail.grade)">
-      <text>查看全部评价</text>
+    <!-- View all evaluation buttons -->
+    <view v-if="commDetail && commDetail.records && commDetail.records.length> 0" class="eva-section-btn"
+          @click="toComment(goodsDetail.goodsId, goodsDetail.grade)">
+      <text>View all reviews</text>
     </view>
   </view>
 </template>
 
 <script>
-import * as API_Members from "@/api/members.js";
+import * as API_Members from '@/api/members.js';
+
 export default {
   data() {
     return {
       lightColor: this.$lightColor,
-      // 评论集合
+      // Comment collection
       commDetail: [],
-      grade: "",
-      // 评论分页提交数据
+      grade: '',
+      // Comment page submission data
       params: {
         pageNumber: 1,
         pageSize: 10,
-        grade: "",
-      },
+        grade: ''
+      }
     };
   },
   props: {
     goodsDetail: {
       default: {},
-      type: Object,
-    },
+      type: Object
+    }
   },
 
   watch: {
@@ -74,8 +77,8 @@ export default {
         this.getGoodsComments();
       },
       deep: true,
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   mounted() {
     // this.getGoodsComments();
@@ -85,70 +88,74 @@ export default {
       this.$refs.uReadMore.init();
     },
 
-    // 获取商品评论
+    // Get product reviews
     getGoodsComments() {
       API_Members.getGoodsComments(this.goodsDetail.goodsId, this.params).then(
-        (res) => {
-          this.commDetail = res.data.result;
-        }
+          (res) => {
+            this.commDetail = res.data.result;
+          }
       );
     },
     toComment(id, grade) {
       uni.navigateTo({
-        url: `/pages/product/comment?id=${id}&grade=${grade}`,
+        url: `/pages/product/comment?id=${ id }&grade=${ grade }`
       });
     },
     /**
-     * 点击图片放大或保存
+     * Click the picture to enlarge or save
      */
     previewImg(url, index) {
       uni.previewImage({
         urls: url,
-        indicator: "number",
-        current: index,
+        indicator: 'number',
+        current: index
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 @import "../product.scss";
+
 .commImg {
-  margin-right: 12rpx;
-  margin-bottom: 10rpx;
+  margin-right: 12 rpx;
+  margin-bottom: 10 rpx;
   display: inline-block;
 }
+
 .name {
   color: #262626;
-  font-size: 22rpx;
+  font-size: 22 rpx;
 }
+
 .eva-section-btn {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40rpx 40rpx 50rpx;
-  margin: 2px 0 20rpx 0;
+  padding: 40 rpx 40 rpx 50 rpx;
+  margin: 2px 0 20 rpx 0;
   background: #fff;
 
   text {
-    width: 200rpx;
-    height: 50rpx;
-    font-size: 22rpx;
-    line-height: 46rpx;
+    width: 200 rpx;
+    height: 50 rpx;
+    font-size: 22 rpx;
+    line-height: 46 rpx;
     text-align: center;
     color: #262626;
-    border: 2rpx solid #ededed;
+    border: 2 rpx solid #ededed;
     box-sizing: border-box;
     border-radius: 30px;
   }
 }
 
 .goodsNoMore {
-  padding: 20rpx 0;
+  padding: 20 rpx 0;
   text-align: center;
   color: $u-tips-color;
 }
+
 /* 评价 */
 .eva-section {
   display: flex;
@@ -162,53 +169,58 @@ export default {
 
     font-size: $font-sm + 2rpx;
     color: $font-color-light;
+
     > .evaluate-num {
-      margin-left: 10rpx;
-      font-size: 24rpx;
+      margin-left: 10 rpx;
+      font-size: 24 rpx;
       color: #333;
     }
+
     .tit {
-      font-size: 32rpx;
+      font-size: 32 rpx;
       color: $font-color-dark;
       font-weight: 500;
-      margin: 0 4rpx;
+      margin: 0 4 rpx;
     }
 
     .tip {
       flex: 1;
       text-align: right;
       color: #8c8c8c;
-      font-size: 24rpx;
+      font-size: 24 rpx;
     }
 
     .icon-you {
-      margin-left: 10rpx;
+      margin-left: 10 rpx;
     }
   }
 }
+
 .scroll-x {
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
 
   overflow-x: auto;
 }
+
 .eva-box {
-  padding: 36rpx 0 30rpx 0;
-  border-bottom: 2rpx solid #f2f2f2;
+  padding: 36 rpx 0 30 rpx 0;
+  border-bottom: 2 rpx solid #f2f2f2;
+
   .section-info {
     display: flex;
     align-items: center;
 
     .portrait {
       flex-shrink: 0;
-      width: 80rpx;
-      height: 80rpx;
+      width: 80 rpx;
+      height: 80 rpx;
       border-radius: 100px;
-      margin-right: 20rpx;
+      margin-right: 20 rpx;
     }
 
     > view > text {
-      margin-left: 6rpx;
+      margin-left: 6 rpx;
     }
   }
 
@@ -217,11 +229,11 @@ export default {
     flex-direction: column;
 
     .con {
-      font-size: 26rpx;
-      line-height: 46rpx;
+      font-size: 26 rpx;
+      line-height: 46 rpx;
       color: $font-color-dark;
       color: #333;
-      padding: 20rpx 0;
+      padding: 20 rpx 0;
     }
 
     .img {
@@ -230,9 +242,9 @@ export default {
     .bot {
       display: flex;
       justify-content: space-between;
-      font-size: 22rpx;
+      font-size: 22 rpx;
       color: #999;
-      margin-top: 20rpx;
+      margin-top: 20 rpx;
     }
   }
 }

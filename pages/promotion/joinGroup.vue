@@ -2,7 +2,7 @@
   <view class="wrapper">
 
     <u-navbar :border-bottom="false" :background="background" class="unavbar" :title="title">
-      <!-- 中间 -->
+      <!-- middle -->
       <view class="slot-wrap container-wrap">
 
         <view v-if="search">
@@ -10,17 +10,17 @@
         </view>
 
       </view>
-      <!-- 右侧 -->
+      <!-- right side -->
       <view slot="right">
         <view style="margin-right: 24rpx;" @click="searchFlag()">
-          <view v-if="search">取消</view>
+          <view v-if="search">Cancel</view>
           <u-icon v-if="!search" size="44rpx" name="search"></u-icon>
         </view>
       </view>
     </u-navbar>
-    <!-- 顶部栏 -->
+    <!-- Top bar -->
 
-    <!-- 商品栏 -->
+    <!-- Commodity column -->
     <div class="swiper">
 
       <div v-if="groupBuy.length !=0">
@@ -28,7 +28,7 @@
           <view class="view-left">
             <u-image border-radius="10" shape="square" :src="groupItem.goodsImage" width="186rpx" height="186rpx">
 
-              <view slot="error" style="font-size: 24rpx;">加载失败</view>
+              <view slot="error" style="font-size: 24rpx;">Failed to load</view>
             </u-image>
           </view>
           <view class="view-content">
@@ -38,7 +38,7 @@
             <view class="view-content-bottom">
               <view>
                 <view class="view-content-price">
-                  <!-- ￥{{groupItem.sales_price | unitPrice }} <span v-if="groupItem.point">+{{groupItem.point}}积分</span> -->
+                  <!-- ￥{{groupItem.sales_price | unitPrice }} <span v-if="groupItem.point">+{{groupItem.point}}Points</span> -->
                   ￥{{groupItem.price | unitPrice }}
                 </view>
                 <view class="view-content-original_price">
@@ -47,15 +47,15 @@
               </view>
 
               <view>
-                <view class="btn-group" @click="toHref(groupItem)"> 去拼团 </view>
-                <view class="buy-content">已售{{groupItem.num || 0}}件</view>
+                <view class="btn-group" @click="toHref(groupItem)"> To join the group </view>
+                <view class="buy-content">Sold {{groupItem.num || 0}} pieces</view>
               </view>
             </view>
           </view>
         </view>
         <u-loadmore bg-color='#f8f8f8' :status="status" />
       </div>
-      <u-empty v-else style="margin-top:20%" text="暂无拼团活动" mode="data"></u-empty>
+      <u-empty v-else style="margin-top:20%" text="No group activities at the moment" mode="data"></u-empty>
 
     </div>
 
@@ -72,7 +72,7 @@ export default {
       status: "loadmore",
       is_empty: false,
       search: false,
-      title: "拼团活动",
+      title: "Group Joining Activities",
       background: {
         backgroundColor: "#fff",
       },
@@ -89,13 +89,13 @@ export default {
   mounted() {},
   watch: {
     search(val) {
-      val ? (this.title = "") : (this.title = "拼团活动");
+      val? (this.title = ""): (this.title = "Join group activities");
     },
   },
   onReachBottom() {
     this.loadMore();
   },
-  // 点击搜索按钮
+  // Click the search button
   onNavigationBarButtonTap(e) {
     this.popupFlag = !this.popupFlag;
   },
@@ -121,7 +121,7 @@ export default {
       this.groupBuy = [];
       this.GET_AssembleGoods();
     },
-    // 请求拼团数据
+    // Request join group data
     GET_AssembleGoods() {
       this.status = "loading";
       const params = JSON.parse(JSON.stringify(this.params));

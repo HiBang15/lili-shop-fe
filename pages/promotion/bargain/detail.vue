@@ -3,7 +3,7 @@
     <u-navbar back-icon-color="#fff" :background="background" :border-bottom="false" title=""></u-navbar>
 
     <div class="wrapper">
-      <!-- 砍价列表 -->
+      <!-- Bargain List -->
       <div class="box box1">
         <div class="bargain">
           <div class="flex bargain-item">
@@ -12,59 +12,63 @@
             </div>
             <div class="goods-config">
               <div class="goods-title wes-2">
-                {{bargainDetail.goodsName}}
+                {{ bargainDetail.goodsName }}
               </div>
               <div class="flex price-box">
-                <div class="purchase-price">当前:<span>￥{{ activityData.surplusPrice == 0 ? this.bargains.purchasePrice :  activityData.surplusPrice | unitPrice}}</span>
+                <div class="purchase-price">
+                  Currently:<span>￥{{
+                    activityData.surplusPrice == 0 ? this.bargains.purchasePrice : activityData.surplusPrice | unitPrice
+                  }}</span>
                 </div>
-                <div class="max-price">原价:<span>￥{{ bargainDetail.price | unitPrice}}</span>
+                <div class="max-price">Original price: <span>￥{{ bargainDetail.price | unitPrice }}</span>
 
                 </div>
               </div>
-              <div class="tips">{{bargainDetail.sellingPoint}}</div>
+              <div class="tips">{{ bargainDetail.sellingPoint }}</div>
             </div>
           </div>
-          <!-- 砍价进度 -->
+          <!-- Bargaining progress -->
           <div class="bargain-progress">
-            <u-line-progress class="line" :active-color="lightColor" striped striped-active :percent="totalPercent"></u-line-progress>
+            <u-line-progress class="line" :active-color="lightColor" striped striped-active
+                             :percent="totalPercent"></u-line-progress>
             <div class="flex tips">
-              <div>已砍{{cutPrice}}元</div>
-              <div>还剩{{activityData.surplusPrice}}元</div>
+              <div>{{ cutPrice }} yuan has been cut</div>
+              <div>{{ activityData.surplusPrice }} yuan left</div>
             </div>
           </div>
-          <!-- 参与砍价 -->
+          <!-- Participate in bargaining -->
           <div class="bargaining" v-if="!activityData.pass" @click="shareBargain">
-            邀请砍价
+            Invite bargaining
           </div>
-          <!-- 立即购买 -->
+          <!-- Buy now -->
 
           <div class="buy" v-else @click="getGoodsDetail">
-            立即购买
+            Buy now
           </div>
         </div>
       </div>
-      <!-- 帮砍列表 -->
+      <!-- Help cut list -->
       <div class="box box2">
         <div class="bargain">
-          <div class="bargain-title">帮忙砍</div>
+          <div class="bargain-title">Help cut</div>
           <div class="user-item flex" v-if="logData.length !=0 " v-for="(item,index) in logData" :key="index">
             <div>
               <u-image width="75" shape="circle" height="75" :src="item.kanjiaMemberFace"></u-image>
             </div>
             <div class="user-config flex">
               <div class="user-name">
-                <div>{{item.kanjiaMemberName | noPassByName}}</div>
-                <div>使出吃的奶劲儿</div>
+                <div>{{ item.kanjiaMemberName | noPassByName }}</div>
+                <div>Exercise the milk to eat</div>
               </div>
-              <div class="save">砍掉：<span>￥{{item.kanjiaPrice | unitPrice}}</span></div>
+              <div class="save">Cut off: <span>￥{{ item.kanjiaPrice | unitPrice }}</span></div>
             </div>
           </div>
         </div>
       </div>
-      <!-- 产品详情 -->
+      <!-- Product details -->
       <div class="box box3">
         <div class="bargain">
-          <div class="bargain-title">商品详情</div>
+          <div class="bargain-title">Product details</div>
           <view class="u-content">
             <u-parse :html="bargainDetail.mobileIntro"></u-parse>
           </view>
@@ -72,13 +76,16 @@
         </div>
       </div>
 
-      <!-- 砍价 -->
-      <u-modal title="恭喜您砍掉了" v-model="Bargaining" mask-close-able :show-confirm-button="false" :title-style="{color: lightColor}">
+      <!-- Bargaining -->
+      <u-modal title="Congratulations on cutting off" v-model="Bargaining" mask-close-able :show-confirm-button="false"
+               :title-style="{color: lightColor}">
         <view class="slot-content">
-          <u-count-to :start-val="0" ref="uCountTo" font-size="100" :color="lightColor" :end-val="kanjiaPrice" :decimals="2" :autoplay="autoplay"></u-count-to><span class="price">元</span>
+          <u-count-to :start-val="0" ref="uCountTo" font-size="100" :color="lightColor" :end-val="kanjiaPrice"
+                      :decimals="2" :autoplay=" autoplay"></u-count-to>
+          <span class="price">yuan</span>
         </view>
       </u-modal>
-      <!-- 帮砍 -->
+      <!-- Help chop -->
 
       <u-modal :show-title="false" v-model="helpBargainFlage" :show-confirm-button="false">
         <view class="help-bargain" @click="handleClickHelpBargain">
@@ -87,16 +94,19 @@
         </view>
       </u-modal>
 
-      <!-- 分享 -->
-      <shares @close="closeShare" :link="'/pages/promotion/bargain/detail?id='+routerVal.id+'&activityId='+activityData.id" type="kanjia" :thumbnail="bargainDetail.thumbnail"
-        :goodsName="bargainDetail.goodsName" v-if="shareFlage " />
+      <!-- Share -->
+      <shares @close="closeShare"
+              :link="'/pages/promotion/bargain/detail?id='+routerVal.id+'&activityId='+activityData.id" type="kanjia"
+              :thumbnail="bargainDetail.thumbnail "
+              :goodsName="bargainDetail.goodsName" v-if="shareFlage" />
 
-      <!-- 购买 -->
+      <!-- Purchase -->
 
-      <popupGoods :addr="addr" ref="popupGoods" :buyMask="maskFlag" @closeBuy="closePopupBuy" :goodsDetail="bargainDetail" :goodsSpec="goodsSpec" v-if="bargainDetail.id "
-        @handleClickSku="getGoodsDetail" />
+      <popupGoods :addr="addr" ref="popupGoods" :buyMask="maskFlag" @closeBuy="closePopupBuy"
+                  :goodsDetail="bargainDetail" :goodsSpec="goodsSpec" v-if="bargainDetail.id "
+                  @handleClickSku="getGoodsDetail" />
 
-      <!-- 产品详情 -->
+      <!-- Product details -->
       <div class=" box4">
 
       </div>
@@ -105,56 +115,57 @@
 </template>
 
 <script>
-import popupGoods from "@/pages/cart/payment/popup/goods"; //购物车商品的模块
+import popupGoods from '@/pages/cart/payment/popup/goods'; //Module of shopping cart goods
 import {
   getBargainDetail,
   getBargainActivity,
   openBargain,
   getBargainLog,
-  helpBargain,
-} from "@/api/promotions";
-import { getGoods } from "@/api/goods.js";
-import shares from "@/components/m-share/index";
+  helpBargain
+} from '@/api/promotions';
+import { getGoods } from '@/api/goods.js';
+import shares from '@/components/m-share/index';
+
 export default {
   components: {
     shares,
-    popupGoods,
+    popupGoods
   },
   data() {
     return {
       background: {
-        backgroundColor: "transparent",
+        backgroundColor: 'transparent'
       },
-      maskFlag: false, //商品弹框
+      maskFlag: false, //Commodity bullet frame
       shareFlage: false,
       lightColor: this.$lightColor,
       bargains: {},
-      bargainDetail: {}, //砍价商品详情
-      Bargaining: false, //砍价弹出框
-      helpBargainFlage: false, //帮砍弹出框
-      autoplay: false, //砍价金额滚动
-      kanjiaPrice: 0, //砍价金额
-      totalPercent: 0, //砍价半分比
-      activityData: "", //砍价活动
-      cutPrice: 0, //已砍金额
+      bargainDetail: {}, //Bargain product details
+      Bargaining: false, //Bargaining pop-up box
+      helpBargainFlage: false, //Help cut the pop-up box
+      autoplay: false, //Bargaining amount rolls
+      kanjiaPrice: 0, //Amount of bargaining
+      totalPercent: 0, //Half-point bargaining ratio
+      activityData: '', //Bargaining activity
+      cutPrice: 0, //Amount already cut
       params: {
-        // id: "", //砍价活动ID
-        // kanjiaActivityGoodsId: "", //砍价商品SkuID
-        // kanjiaActivityId: "", //邀请活动ID，有值说明是被邀请人
-        // status: "", //状态
+        // id: "", //Bargaining activity ID
+        // kanjiaActivityGoodsId: "", //Bargain Goods SkuID
+        // kanjiaActivityId: "", //Invitation activity ID, with a value indicating that it is the invitee
+        // status: "", //status
       },
 
-      logData: [], // 帮砍记录
-      //获取帮砍记录参数
+      logData: [], // Help cut records
+      //Get help record parameters
       logParams: {
         pageNumber: 1,
         pageSize: 20,
-        kanJiaActivityId: "",
+        kanJiaActivityId: ''
       },
 
-      goodsDetail: {}, //商品详情
-      goodsSpec: {}, //商品规格
-      selectedGoods: "", //选择的商品
+      goodsDetail: {}, //Product details
+      goodsSpec: {}, //Product specification
+      selectedGoods: '' //selected goods
     };
   },
   onLoad(options) {
@@ -167,7 +178,7 @@ export default {
     this.init();
   },
   watch: {
-    // 砍价弹窗
+    // Bargaining pop-up window
     Bargaining(val) {
       if (val) {
         this.$nextTick(() => {
@@ -175,21 +186,21 @@ export default {
         });
       }
     },
-    // 监听砍价活动金额
+    // Monitor the amount of bargaining activities
     activityData: {
       handler(val) {
         if (val) {
-          // 计算砍价百分比
+          // Calculate the percentage of bargaining
           this.totalPercent =
-            100 -
-            Math.floor((val.surplusPrice / this.bargainDetail.price) * 100);
+              100 -
+              Math.floor((val.surplusPrice / this.bargainDetail.price) * 100);
           this.cutPrice = (
-            this.bargainDetail.price - this.activityData.surplusPrice
+              this.bargainDetail.price - this.activityData.surplusPrice
           ).toFixed(2);
-          // 获取砍价日志
+          // Get the bargaining log
           this.logParams.kanJiaActivityId = val.id;
 
-          // 判断是否是帮砍
+          // Determine if it is a chop
           if (this.params.kanjiaActivityId && val.help) {
             this.helpBargainFlage = true;
           }
@@ -197,8 +208,8 @@ export default {
           this.getBargainLogList();
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   methods: {
     closePopupBuy(val) {
@@ -207,92 +218,92 @@ export default {
     closeShare() {
       this.shareFlage = false;
     },
-    // 邀请砍价
+    // invite bargaining
     shareBargain() {
       this.shareFlage = true;
     },
 
-    // 获取商品详情
+    // Get product details
     getGoodsDetail() {
       uni.showLoading({
-        title: "加载中",
-        mask: true,
+        title: 'Loading',
+        mask: true
       });
 
       this.$refs.popupGoods.buy({
         skuId: this.bargainDetail.id,
         num: 1,
-        cartType: "KANJIA",
+        cartType: 'KANJIA'
       });
       // getGoods(this.bargainDetail.id, this.bargainDetail.goodsId).then(
-      //   (response) => {
-      //     this.goodsDetail = response.data.result.data;
-      //     this.selectedGoods = response.data.result.data;
-      //     this.goodsSpec = response.data.result.specs;
-      //     uni.hideLoading();
+      // (response) => {
+      // this.goodsDetail = response.data.result.data;
+      // this.selectedGoods = response.data.result.data;
+      // this.goodsSpec = response.data.result.specs;
+      // uni.hideLoading();
 
-      //     // this.maskFlag = true;
-      //   }
+      // // this.maskFlag = true;
+      //}
       // );
     },
 
-    // 初始化商品以及砍价活动
+    // Initialize products and bargaining activities
     async init() {
-      // 获取商品
+      // Get the product
       let res = await getBargainDetail(this.routerVal.id);
       if (res.data.success) {
         this.bargainDetail = res.data.result.goodsSku;
         this.bargains = res.data.result;
-        // 被邀请活动id
+        // Invited event id
         if (this.params.kanjiaActivityId) {
         } else {
           this.params.kanjiaActivityGoodsId = this.routerVal.id;
         }
-        // 获取砍价活动
+        // Get bargaining activities
         this.activity();
       }
     },
-    // 获取砍价活动
+    // Get bargaining activities
     async activity() {
       let res = await getBargainActivity(this.params);
-      // 判断当前是否是第一次进入，如果是第一次进入默认砍一刀
+      // Determine whether it is the first time to enter, if it is the first time to enter, the default is to cut a knife
       res.data.success
-        ? res.data.result
+          ? res.data.result
           ? (this.activityData = res.data.result)
           : this.openActivity()
-        : "";
+          : '';
     },
-    // 分页获取砍价活动-帮砍记录
+    // Get bargaining activity by page-help cut records
     async getBargainLogList() {
       let res = await getBargainLog(this.logParams);
       if (res.data.success) {
         this.logData = res.data.result.records;
       }
     },
-    // 帮忙砍一刀
+    // Help cut a knife
     async handleClickHelpBargain() {
       let res = await helpBargain(this.params.kanjiaActivityId);
       if (res.data.success) {
         this.helpBargainFlage = false;
         this.kanjiaPrice = res.data.result.kanjiaPrice;
         this.Bargaining = true;
-        // 帮砍完成之后查询帮砍记录
+        // After the help cut is completed, query the help cut record
         this.init();
       } else {
         this.helpBargainFlage = false;
       }
     },
-    // 发起砍价活动
+    // initiate bargaining activities
     async openActivity(data) {
-      let res = await openBargain({ id: this.routerVal.id });
+      let res = await openBargain({id: this.routerVal.id});
       if (res.data.success) {
         this.kanjiaPrice = res.data.result.kanjiaPrice;
         this.Bargaining = true;
-        // 查询帮砍记录
+        // Query help cut records
         this.init();
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss">
@@ -305,89 +316,104 @@ page {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin: 20rpx 0 80rpx 0;
+  margin: 20 rpx 0 80 rpx 0;
 }
+
 .price {
-  margin-left: 10rpx;
+  margin-left: 10 rpx;
   color: $light-color;
 }
+
 .price-box {
   align-items: center;
-  padding: 10rpx 0;
+  padding: 10 rpx 0;
 }
+
 .wrapper {
   background: url("../static/Bargaining.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  height: 700rpx;
+  height: 700 rpx;
   width: 100%;
 }
 
 .box {
   background: #fff;
-  border-radius: 20rpx;
+  border-radius: 20 rpx;
   position: relative;
   width: 94%;
   margin: 0 auto;
+
   > .bargain {
-    padding: 32rpx;
+    padding: 32 rpx;
   }
 }
+
 .box1 {
-  top: 750rpx;
+  top: 750 rpx;
 }
+
 .box2 {
-  top: 770rpx;
+  top: 770 rpx;
 }
+
 .box3 {
-  top: 790rpx;
+  top: 790 rpx;
 }
+
 .box4 {
-  top: 810rpx;
-  height: 200rpx;
+  top: 810 rpx;
+  height: 200 rpx;
 }
+
 .bargain-item {
   align-items: center;
 }
+
 .goods-config {
-  margin-left: 20rpx;
+  margin-left: 20 rpx;
+
   > .goods-title {
     font-weight: bold;
   }
 }
+
 .max-price,
 .purchase-price {
-  font-size: 24rpx;
+  font-size: 24 rpx;
   color: #999;
 }
+
 .max-price {
-  margin-left: 10rpx;
+  margin-left: 10 rpx;
   text-decoration: line-through;
 }
+
 .purchase-price {
   color: $main-color;
+
   > span {
-    font-size: 32rpx;
+    font-size: 32 rpx;
     font-weight: bold;
   }
 }
 
 .bargaining,
 .buy {
-  font-size: 24rpx;
+  font-size: 24 rpx;
   color: #fff;
   width: 80%;
-  margin: 50rpx auto 0 auto;
+  margin: 50 rpx auto 0 auto;
   text-align: center;
-  font-size: 30rpx;
+  font-size: 30 rpx;
   background-image: linear-gradient(
-    25deg,
-    $main-color,
-    $light-color,
-    $aider-light-color
+          25deg,
+          $main-color,
+          $light-color,
+          $aider-light-color
   );
 
-  padding: 18rpx;
+  padding: 18 rpx;
   border-radius: 100px;
   animation: mymove 5s infinite;
   -webkit-animation: mymove 5s infinite; /*Safari and Chrome*/
@@ -413,49 +439,60 @@ page {
     transform: scale(1.1);
   }
 }
+
 .line {
-  margin: 20rpx 0;
+  margin: 20 rpx 0;
 }
+
 .tips {
-  font-size: 24rpx;
+  font-size: 24 rpx;
   color: #999;
   justify-content: space-between;
 }
+
 .bargain-progress {
-  margin: 20rpx 0;
+  margin: 20 rpx 0;
 }
+
 .bargain-title {
-  font-size: 32rpx;
+  font-size: 32 rpx;
   font-weight: bold;
   color: $light-color;
   text-align: center;
-  margin-bottom: 40rpx;
+  margin-bottom: 40 rpx;
 }
+
 .user-item {
-  margin: 40rpx 0;
+  margin: 40 rpx 0;
   align-items: center;
 }
+
 .user-config {
-  margin-left: 20rpx;
+  margin-left: 20 rpx;
   flex: 8;
   align-items: center;
   justify-content: space-between;
+
   > .user-name {
     > div:nth-of-type(1) {
-      font-size: 28rpx;
+      font-size: 28 rpx;
     }
+
     > div:nth-last-of-type(1) {
-      font-size: 24rpx;
+      font-size: 24 rpx;
       color: #999;
     }
   }
 }
+
 .save {
   color: $light-color;
+
   > span {
     font-weight: bold;
   }
 }
+
 .mobile-intro {
   overflow: hidden;
   max-width: 100%;
@@ -481,11 +518,12 @@ page {
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  > .help {
-    margin-bottom: 40rpx;
-    border-radius: 20rpx;
 
-    margin-top: 40rpx;
+  > .help {
+    margin-bottom: 40 rpx;
+    border-radius: 20 rpx;
+
+    margin-top: 40 rpx;
     animation: fontMove 5s infinite;
     -webkit-animation: fontMove 5s infinite; /*Safari and Chrome*/
     animation-direction: alternate; /*轮流反向播放动画。*/

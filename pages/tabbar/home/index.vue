@@ -1,25 +1,25 @@
 <template>
-  <div class="wrapper">
-    <!-- 楼层装修组件 -->
-    <tpl />
-  </div>
+   <div class="wrapper">
+     <!-- Floor decoration components -->
+     <tpl />
+   </div>
 </template>
 <script>
 import tpl from "@/pages/tabbar/home/views.vue";
 
 export default {
-  
-  data() {
-    return {
-      background: {
-        backgroundColor: "#fff",
-      },
-    };
-  },
-  components: {
-    tpl,
-  },
-  
+
+   data() {
+     return {
+       background: {
+         backgroundColor: "#fff",
+       },
+     };
+   },
+   components: {
+     tpl,
+   },
+
 };
 </script>
 

@@ -729,7 +729,7 @@
 				tools_7(done) && done(makeURI(strData, 'image/' + type), err);
 			});
 		} else {
-			console.error('暂不支持生成\'' + type + '\'类型的base64图片');
+			console.error('Does not support generation\'' + type + '\'Type of base64 picture');
 		}
 	}
 

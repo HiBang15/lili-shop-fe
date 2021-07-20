@@ -1,6 +1,7 @@
 <template>
-  <u-popup class="popup" v-model="addressFlag" :height="setup.height" :mode="setup.mode" :border-radius="setup.radius" @close="closeAddress()" :mask-close-able="setup.close" :mask="false" closeable>
-    <view class="header-title">选择地址</view>
+  <u-popup class="popup" v-model="addressFlag" :height="setup.height" :mode="setup.mode" :border-radius="setup.radius"
+           @close="closeAddress()" :mask-close-able="setup.close" :mask="false" closeable>
+    <view class="header-title">Select address</view>
     <view class="view-box" v-if="addressDetail">
       <view class="view-item" v-for="(item, index) in addressDetail" :key="index" @click="clickAddress(item)">
         <view class="view-box-checkbox">
@@ -8,78 +9,80 @@
             <u-icon v-if="item.isDefault" :class="{ active: item.isDefault }" name="checkmark" size="12"></u-icon>
           </view>
         </view>
-        <view class="view-box-dress" :class="{ 'box-dress-blod': item.isDefault }">{{ item.consigneeAddressPath | clearStrComma }}</view>
+        <view class="view-box-dress" :class="{'box-dress-blod': item.isDefault }">
+          {{ item.consigneeAddressPath | clearStrComma }}
+        </view>
       </view>
     </view>
     <view class="view-box" v-else>
       <view class="noMore">
-        <u-empty text="暂无收货地址" mode="address"></u-empty>
+        <u-empty text="No delivery address yet" mode="address"></u-empty>
       </view>
     </view>
 
-    <!-- 按钮 -->
+    <!-- button -->
 
     <view class="btns">
-      <view class="box-btn light" @click="getpicker">选择其他地址</view>
-      <view class="box-btn" @click="closeAddress()">确定</view>
+      <view class="box-btn light" @click="getpicker">Select another address</view>
+      <view class="box-btn" @click="closeAddress()">OK</view>
     </view>
-    <m-city :provinceData="cityList" headTitle="区域选择" ref="cityPicker"  pickerSize="4"></m-city>
+    <m-city :provinceData="cityList" headTitle="area selection" ref="cityPicker" pickerSize="4"></m-city>
   </u-popup>
 </template>
 <script>
-import setup from "./popup";
-/************请求存储***************/
+import setup from './popup';
+/************Request storage***************/
 
-import * as API_Address from "@/api/address.js";
+import * as API_Address from '@/api/address.js';
+
 export default {
   data() {
     return {
-      checked: "",
+      checked: '',
       setup,
-      addressDetail: "",
+      addressDetail: '',
       cityList: [
         {
-          id: "",
-          localName: "请选择",
-          children: [],
-        },
-      ],
+          id: '',
+          localName: 'Please select',
+          children: []
+        }
+      ]
     };
   },
   filters: {},
   watch: {},
   mounted() {
     this.addressFlag = false;
-    if( this.$options.filters.isLogin("auth") ){
-      this.getShippingAddress()
-    }
-    else{
+    if (this.$options.filters.isLogin('auth')) {
+      this.getShippingAddress();
+    } else {
       uni.navigateTo({
-         url: 'pages/passport/login'
+        url: 'pages/passport/login'
       });
     }
- 
+
   },
-  props: ["goodsId", "addressFlag"],
+  props: ['goodsId', 'addressFlag'],
 
   methods: {
-    /**关闭地址 */
+    /**Close address */
     closeAddress() {
-      this.$emit("closeAddress", false);
-      this.$emit("deliveryData", this.checked);
+      this.$emit('closeAddress', false);
+      this.$emit('deliveryData', this.checked);
     },
 
     getpicker() {
       // this.$refs.cityPicker.show();
       uni.navigateTo({
-        url: "/pages/mine/address/add",
+        url: '/pages/mine/address/add'
       });
       this.closeAddress();
     },
 
-    /**获取地址 */
+    /**Get address */
     getShippingAddress() {
-      if (this.$options.filters.isLogin("auth")) {
+      if (this.$options.filters.isLogin('auth')) {
         API_Address.getAddressList(1, 50).then((res) => {
           if (res.data.success) {
             this.addressDetail = res.data.result.records;
@@ -89,18 +92,18 @@ export default {
 
             if (addr[0]) {
               this.checked = addr[0];
-              this.$emit("deliveryData", this.checked);
+              this.$emit('deliveryData', this.checked);
             }
-            // addr[0] ? "" : (addr = res.data);
+            // addr[0]? "": (addr = res.data);
 
-            // /**获取默认地址是否有货 */
+            // /**Get whether the default address is in stock */
             // this.clickAddress(addr[0]);
           }
         });
       }
     },
 
-    /**点击地址返回父级商品状态 */
+    /**Click on the address to return to the parent product status */
     clickAddress(val) {
       this.checked = val;
 
@@ -108,21 +111,22 @@ export default {
         item.isDefault = false;
       });
       val.isDefault = !val.isDefault;
-      this.$emit("deliveryData", this.checked);
-    },
-  },
+      this.$emit('deliveryData', this.checked);
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
 .light {
   background-image: linear-gradient(
-    135deg,
-    #ffba0d,
-    #ffc30d 69%,
-    #ffcf0d
+          135deg,
+          #ffba0d,
+          #ffc30d 69%,
+          #ffcf0d
   ) !important;
   box-shadow: 0 2px 6px 0 rgba(255, 65, 66, 0.2);
 }
+
 .noMore {
   width: 100%;
   height: 100%;
@@ -134,44 +138,50 @@ export default {
 .view-item {
   display: flex;
   align-items: center;
-  padding: 22rpx 0;
+  padding: 22 rpx 0;
 }
+
 .view-box-dress {
-  letter-spacing: 1rpx;
-  margin-left: 20rpx;
-  line-height: 42rpx;
+  letter-spacing: 1 rpx;
+  margin-left: 20 rpx;
+  line-height: 42 rpx;
   color: #333;
-  font-size: 28rpx;
+  font-size: 28 rpx;
 }
+
 .checked {
   background: $jd-color;
 }
+
 .active {
   color: #fff;
 }
+
 .checkbox {
   text-align: center;
-  line-height: 40rpx;
-  width: 40rpx;
-  height: 40rpx;
+  line-height: 40 rpx;
+  width: 40 rpx;
+  height: 40 rpx;
   border-radius: 50%;
-  border: 2rpx solid #ededed;
+  border: 2 rpx solid #ededed;
 }
+
 @import "./popup.scss";
 .view-box {
-  height: 810rpx;
+  height: 810 rpx;
   // #ifdef MP-WEIXIN
-  height: 770rpx;
+  height: 770 rpx;
   // #endif
-  padding: 0 20rpx;
+  padding: 0 20 rpx;
   overflow-y: auto;
 }
+
 .header-title {
   font-weight: bold;
   color: #333;
   text-align: center;
-  height: 90rpx;
-  line-height: 90rpx;
-  font-size: 34rpx;
+  height: 90 rpx;
+  line-height: 90 rpx;
+  font-size: 34 rpx;
 }
 </style>

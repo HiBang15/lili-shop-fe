@@ -1,69 +1,71 @@
 <template>
   <view class="group-list">
-    <view class="group-name">拼购列表</view>
+    <view class="group-name">Shopping list</view>
     <view v-if="assembleOrder.length !=0">
       <view class="group-item" v-for="(order,index) in assembleOrder" :key="index">
         <view class="group-item-user">
           <u-image shape="circle" width="40px" height="40px" :src="order.face"></u-image>
-          <span class="group-item-name">{{order.nickName | noPassByName}}</span>
+          <span class="group-item-name">{{ order.nickName | noPassByName }}</span>
         </view>
         <view>
-          <span class="group-item-name">还差{{ order.toBeGroupedNum}}人成团</span>
+          <span class="group-item-name">It’s still a group of {{ order.toBeGroupedNum }} people</span>
         </view>
         <view>
-          <u-button size="mini" :custom-style="customStyle" @click="buy(order)">去参团</u-button>
+          <u-button size="mini" :custom-style="customStyle" @click="buy(order)">Go to the group</u-button>
         </view>
       </view>
 
     </view>
     <view v-else class="nomore">
 
-      <u-empty text="暂无拼团信息" mode="list"></u-empty>
+      <u-empty text="No group joining information yet" mode="list"></u-empty>
     </view>
   </view>
 </template>
 
 <script>
-import * as API_Promotions from "@/api/promotions";
+import * as API_Promotions from '@/api/promotions';
+
 export default {
   data() {
     return {
       customStyle: {
         background: this.$lightColor,
-        color: "#fff",
+        color: '#fff'
       },
-      /** 待成团订单 */
-      assembleOrder: "",
+      /** Pending group orders */
+      assembleOrder: '',
 
-      /** 查看更多待成团订单 */
-      assembleOrderAll: "",
+      /** View more pending group orders */
+      assembleOrderAll: ''
     };
   },
-  props: ["res"],
+  props: ['res'],
 
   watch: {
     res: {
       handler() {
         if (this.res && this.res.length != 0) {
           Object.keys(this.res).forEach((item) => {
-            let key = item.split("-");
-            if (key && key[0] == "PINTUAN") {
+            let key = item.split('-');
+            if (key && key[0] == 'PINTUAN') {
               this.getAssembleInfo(item);
             }
           });
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
 
     // assembleOrder(val) {
-    //   this.$emit("assembleOrder", val);
+    // this.$emit("assembleOrder", val);
     // },
   },
   computed: {},
-  mounted() {},
+  mounted() {
+  },
   methods: {
-    // 获取此商品所有待成团的订单
+    // Get all pending orders for this product
     getAssembleInfo(val) {
       let id = this.res[val].id;
       API_Promotions.getPromotionGroupMember(id).then((res) => {
@@ -75,20 +77,21 @@ export default {
     },
 
     buy(order) {
-      this.$emit("to-assemble-buy-now", order);
-    },
-  },
+      this.$emit('to-assemble-buy-now', order);
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 @import "../product.scss";
+
 .nomore {
-  padding: 10rpx 0;
+  padding: 10 rpx 0;
 }
 
 .group-item {
-  margin: 30rpx 0;
+  margin: 30 rpx 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -100,8 +103,8 @@ export default {
 }
 
 .group-item-name {
-  margin-left: 23rpx;
-  font-size: 24rpx;
+  margin-left: 23 rpx;
+  font-size: 24 rpx;
   color: #999999;
   font-weight: 400;
 }

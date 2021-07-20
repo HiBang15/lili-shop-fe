@@ -11,10 +11,10 @@
 import { modelNavigateTo } from "./tpl";
 
 export default {
-  title: "三列单行图片模块",
+  title: "Three-column single-line image module",
   props: ["res"],
   mounted() {
-   
+
   },
   data() {
     return {

@@ -1,22 +1,22 @@
 <template>
-  <view class="recommend-box" >
-    <h4 class="goods-recommend-title">宝贝推荐</h4>
+  <view class="recommend-box">
+    <h4 class="goods-recommend-title">Baby recommendation</h4>
     <view class="like-goods-list">
       <view class="like-goods-list">
         <view
-          class="like-goods-item"
-          @click="clickGoods(item)"
-          v-for="(item, index) in res"
-          :key="index"
+            class="like-goods-item"
+            @click="clickGoods(item)"
+            v-for="(item, index) in res"
+            :key="index"
         >
           <u-image
-            :fade="true"
-            duration="450"
-            :lazy-load="true"
-            :src="item.thumbnail"
-            width="330rpx"
-            height="330rpx"
-            class="like-goods-uimage"
+              :fade="true"
+              duration="450"
+              :lazy-load="true"
+              :src="item.thumbnail"
+              width="330rpx"
+              height="330rpx"
+              class="like-goods-uimage"
           >
             <u-loading slot="loading"></u-loading>
           </u-image>
@@ -24,10 +24,10 @@
             <view class="name">{{ item.goodsName }}</view>
             <view class="price-sales">
               <div class="item-price" v-if="item.price != undefined">
-                ￥
+                $
                 <span>{{ formatPrice(item.price)[0] }}</span>
-                .{{formatPrice(item.price)[1]}}
-                <!-- <text v-if="item.point != undefined">+{{ item.point }}积分</text> -->
+                .{{ formatPrice(item.price)[1] }}
+                <!-- <text v-if="item.point != undefined">+{{ item.point }}Points</text> -->
               </div>
             </view>
           </view>
@@ -39,21 +39,21 @@
 
 <script>
 export default {
-  props: ["res"],
+  props: ['res'],
   methods: {
-    // 点击店铺推荐
+    // Click on store recommendation
     clickGoods(val) {
       uni.navigateTo({
-        url: `/pages/product/goods?id=${val.id}&goodsId=${val.goodsId}`
+        url: `/pages/product/goods?id=${ val.id }&goodsId=${ val.goodsId }`
       });
     },
-    // 格式化金钱  1999 --> [1999,00]
+    // Format money 1999 --> [1999,00]
     formatPrice(val) {
-      if (typeof val == "undefined") {
+      if (typeof val == 'undefined') {
         return val;
       }
-  
-      return val.toFixed(2).split(".");
+
+      return val.toFixed(2).split('.');
     }
   }
 };
@@ -64,16 +64,16 @@ export default {
 @import "../product.scss";
 
 .goods_recomm {
-  padding: 12px 0 20rpx 20rpx;
+  padding: 12px 0 20 rpx 20 rpx;
   color: #000;
-  font-size: 30rpx;
+  font-size: 30 rpx;
   font-weight: 400;
-  margin-bottom: 28rpx;
+  margin-bottom: 28 rpx;
 }
 
 .like-goods-uimage {
   /deep/ .u-image {
-    height: 350rpx !important;
+    height: 350 rpx !important;
   }
 
   width: 100%;
@@ -81,32 +81,34 @@ export default {
 
 .recommend-box {
   background-color: #ffffff;
- 
+
   width: 100%;
 
-  padding-bottom: 120rpx;
+  padding-bottom: 120 rpx;
 
   .title {
-    width: 120rpx;
-    height: 42rpx;
-    font-size: 30rpx;
+    width: 120 rpx;
+    height: 42 rpx;
+    font-size: 30 rpx;
     font-weight: 700;
     text-align: left;
     color: #333333;
-    margin-left: 20rpx;
+    margin-left: 20 rpx;
   }
 }
+
 .like-goods-list {
   display: flex;
   width: 100%;
   flex-wrap: wrap;
 }
+
 .like-goods-item {
   padding: 0 !important;
   width: 48%;
-  margin: 0 1% 10rpx 1%;
+  margin: 0 1% 10 rpx 1%;
   background: #f7f7f7;
-  border-radius: 12rpx;
+  border-radius: 12 rpx;
 
   overflow: hidden;
 
@@ -118,13 +120,13 @@ export default {
 .like-goods-list {
   // background-color: #f8f8f8;
   width: 100%;
-  margin-bottom: 100rpx;
+  margin-bottom: 100 rpx;
 
   .name {
-    padding: 14rpx 8rpx 0 8rpx;
+    padding: 14 rpx 8 rpx 0 8 rpx;
 
     color: #333;
-    font-size: 24rpx;
+    font-size: 24 rpx;
     display: -webkit-box;
     overflow: hidden;
     -webkit-box-orient: vertical;
@@ -132,11 +134,11 @@ export default {
     -webkit-line-clamp: 2;
 
     background: #f7f7f7;
-    height: 80rpx;
+    height: 80 rpx;
   }
 
   .price-sales {
-    padding: 8rpx;
+    padding: 8 rpx;
     background: #f7f7f7;
     display: flex;
     justify-content: space-between;
@@ -146,19 +148,20 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: 26rpx;
+      font-size: 26 rpx;
       text-align: left;
       color: $jd-color;
       line-height: 23px;
       font-weight: bold;
+
       > span {
-        font-size: 32rpx;
+        font-size: 32 rpx;
       }
     }
 
     .sales {
       line-height: 23px;
-      font-size: 22rpx;
+      font-size: 22 rpx;
       text-align: left;
       letter-spacing: 0;
       color: #cccccc;

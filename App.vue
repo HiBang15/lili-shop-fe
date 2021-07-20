@@ -18,12 +18,12 @@ export default {
   },
 
   /**
-   * 监听返回
+   * Monitor return
    */
   onBackPress(e) {
     if (e.from == "backbutton") {
       let routes = getCurrentPages();
-      let curRoute = routes[routes.length - 1].options;
+      let curRoute = routes[routes.length-1].options;
       routes.forEach((item) => {
         if (
           item.route == "pages/tabbar/cart/cartList" ||
@@ -42,7 +42,7 @@ export default {
       } else {
         uni.navigateBack();
       }
-      return true; //阻止默认返回行为
+      return true; //Prevent the default return behavior
     }
   },
   methods: {
@@ -50,12 +50,12 @@ export default {
   },
   onLaunch: function () {
     // #ifdef APP-PLUS
-    this.checkArguments(); // 检测启动参数
+    this.checkArguments(); // check startup parameters
     APPUpdate();
 
-    // 重点是以下： 一定要监听后台恢复 ！一定要
+    // The key points are the following: Be sure to monitor the background recovery! must
     plus.globalEvent.addEventListener("newintent", (e) => {
-      this.checkArguments(); // 检测启动参数
+      this.checkArguments(); // check startup parameters
     });
     // #endif
 
@@ -71,44 +71,44 @@ export default {
   },
   methods: {
     /**
-     * 微信小程序版本提交更新版本 解决缓存问题
+     * WeChat applet version submitted updated version to solve the cache problem
      */
     applyUpdateWeChat() {
       const updateManager = uni.getUpdateManager();
 
       updateManager.onCheckForUpdate(function (res) {
-        // 请求完新版本信息的回调
+        // Callback after requesting new version information
       });
 
       updateManager.onUpdateReady(function (res) {
         uni.showModal({
-          title: "更新提示",
-          content: "发现新版本，是否重启应用？",
+          title: "Update Prompt",
+          content: "A new version is found, do you want to restart the application?",
           success(res) {
             if (res.confirm) {
-              // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+              // The new version has been downloaded, call applyUpdate to apply the new version and restart
               updateManager.applyUpdate();
             }
           },
         });
       });
       updateManager.onUpdateFailed(function (res) {
-        // 新的版本下载失败
+        // failed to download the new version
       });
     },
 
-    //  TODO 开屏广告 后续优化添加
+    // TODO on-screen advertising, subsequent optimization and addition
     launch() {
       try {
-        // 获取本地存储中launchFlag标识 开屏广告
+        // Get the launchFlag logo in the local storage. Open the screen ad
         const value = uni.getStorageSync("launchFlag");
         if (!value) {
           // this.$u.route("/pages/index/agreement");
         } else {
-          //app启动时打开启动广告页
+          //Open the startup advertisement page when the app starts
           var w = plus.webview.open(
             "/hybrid/html/advertise/advertise.html",
-            "本地地址",
+            "Local Address",
             {
               top: 0,
               bottom: 0,
@@ -117,7 +117,7 @@ export default {
             "fade-in",
             500
           );
-          //设置定时器，4s后关闭启动广告页
+          //Set the timer, close and start the ad page after 4s
           setTimeout(function () {
             plus.webview.close(w);
             APPUpdate();
@@ -129,25 +129,25 @@ export default {
           key: "launchFlag",
           data: true,
           success: function () {
-            console.log("error时存储launchFlag");
+            console.log("Store launchFlag when error");
           },
         });
       }
     },
 
     /**
-     * 获取粘贴板数据
+     * Get pasteboard data
      */
     async getClipboard() {
       let res = await getClipboardData();
       /**
-       * 解析粘贴板数据
+       * Analyze pasteboard data
        */
       if (res.indexOf(config.shareLink) != -1) {
         uni.showModal({
-          title: "提示",
-          content: "检测到一个分享链接是否跳转？",
-          confirmText: "跳转",
+          title: "Reminder",
+          content: "Is a shared link detected to jump?",
+          confirmText: "Jump",
           success: function (callback) {
             if (callback.confirm) {
               const path = res.split(config.shareLink)[1];
@@ -167,7 +167,7 @@ export default {
     },
 
     /**
-     * h5中打开app获取跳转app的链接并跳转
+     * Open the app in h5 to get the link of the jump app and jump
      */
     checkArguments() {
       // #ifdef APP-PLUS

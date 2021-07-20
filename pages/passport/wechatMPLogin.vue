@@ -1,25 +1,25 @@
 <template>
   <view class="container">
-    <u-navbar :custom-back="back" title="小程序登录"></u-navbar>
-    <u-modal v-model="phoneAuthPopup" :mask-close-able="true" :title="projectName+'商城'" :show-confirm-button="false">
+    <u-navbar :custom-back="back" title="Mini Program Login"></u-navbar>
+    <u-modal v-model="phoneAuthPopup" :mask-close-able="true" :title="projectName+'Mall'" :show-confirm-button="false">
       <div class="tips">
-        为了更好地用户体验，需要您授权手机号
+        In order to have a better user experience, you need to authorize your phone number
       </div>
       <button class="register" type="primary" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">
-        去授权
+        To authorize
       </button>
     </u-modal>
     <view class="wx-auth-container">
       <div class="box">
         <view class="logo-info">
-          <text class="title">欢迎进入{{ projectName }}商城</text>
+          <text class="title">Welcome to the {{ projectName }} mall</text>
         </view>
         <view class="small-tips">
-          <view>为您提供优质服务,{{ projectName }}需要获取以下信息</view>
-          <view>您的公开信息（昵称、头像）</view>
+          <view>To provide you with quality services, {{ projectName }} needs to obtain the following information</view>
+          <view>Your public information (nickname, profile picture)</view>
         </view>
         <view class="btns">
-          <button type="primary" bindtap="getUserProfile" @click="getUserProfile()" class="btn-auth">确认微信授权</button>
+          <button type="primary" bindtap="getUserProfile" @click="getUserProfile()" class="btn-auth">Confirm WeChat authorization</button>
         </view>
       </div>
     </view>
@@ -27,35 +27,35 @@
 </template>
 
 <script>
-import { mpAutoLogin } from "@/api/connect.js";
+import {mpAutoLogin} from "@/api/connect.js";
 
-import { whetherNavigate } from "@/utils/Foundation"; //登录跳转
-import { getUserInfo } from "@/api/members";
+import {whetherNavigate} from "@/utils/Foundation"; //Login jump
+import {getUserInfo} from "@/api/members";
 import storage from "@/utils/storage.js";
 export default {
   data() {
     return {
-      // 是否展示手机号码授权弹窗，默认第一步不展示，要先获取用户基础信息
+      // Whether to display the mobile phone number authorization pop-up window, the default first step is not to display, you must first obtain the user's basic information
       phoneAuthPopup: false,
-      // 授权信息展示，商城名称
+      // Authorization information display, mall name
       projectName: "LiLi",
-      //微信返回信息，用于揭秘信息，获取sessionkey
+      //WeChat return information, used to reveal the secret information and get the sessionkey
       code: "",
-      //微信昵称
+      //WeChat nickname
       nickName: "",
-      //微信头像
+      //WeChat avatar
       image: "",
     };
   },
 
-  //微信小程序进入页面，先获取code，否则几率出现code和后续交互数据不对应情况
+  //Wechat applet enters the page, first get the code, otherwise there is a chance that the code does not correspond to the subsequent interactive data
   mounted() {
 
-    // 小程序默认分享
+    // Mini Programs are shared by default
     uni.showShareMenu({ withShareTicket: true });
 
     let that = this;
-    //获取code
+    //Get code
     uni.login({
       success: (res) => {
         that.code = res.code;
@@ -64,45 +64,45 @@ export default {
   },
   methods: {
     /**
-     * TODO 此方法不一定是最优解，如果有更好的办法请在  https://gitee.com/beijing_hongye_huicheng/lilishop/issues 中提出
-     * 小程序返回bug
-     * 1.介于微信登录是在login.vue的基础上作为判断跳转来
-     * 所以在页面栈中会自动记录回退路径，所以导致每次微信小程序点击回退就会自动返回login页面
-     * 当然login页面的判断就是 没有登录就会跳转到微信小程序页面 导致了无法回退到之前页面
-     * 2.解决方法： 尝试在回退的时候判断地址，让回退多一级这样就避免了
+     * TODO This method is not necessarily the optimal solution. If there is a better solution, please submit it in https://gitee.com/beijing_hongye_huicheng/lilishop/issues
+     * Mini program returns bug
+     * 1. Because the WeChat login is based on login.vue as a judgment jump
+     * So the fallback path will be automatically recorded in the page stack, so every time the WeChat applet clicks on the fallback, it will automatically return to the login page
+     * Of course, the judgment of the login page is to jump to the WeChat applet page without logging in, resulting in the inability to return to the previous page
+     * 2. Solution: Try to judge the address when rolling back, and let the rolling back one more level so that it is avoided
      */
 
     back() {
       whetherNavigate('wx');
     },
-    //获取用户信息
+    //Get user information
     getUserProfile(e) {
       let that = this;
-      // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认
+      // It is recommended to use wx.getUserProfile to obtain user information. Developers need to confirm the user every time they obtain user personal information through this interface
       uni.getUserProfile({
-        desc: "用于完善会员资料", // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+        desc: "Used to improve member information", // Declare the purpose of obtaining the user's personal information, which will be displayed in the pop-up window later, please fill in carefully
         success: (res) => {
           that.nickName = res.userInfo.nickName;
           that.image = res.userInfo.avatarUrl;
-          //展示手机号获取授权
+          //Show mobile phone number to get authorization
           this.phoneAuthPopup = true;
         },
         fail: (res) => {
-          that.nickName = "微信用户";
+          that.nickName = "WeChat User";
           that.image =
             "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132";
-          //展示手机号获取授权
+          //Show mobile phone number to get authorization
           this.phoneAuthPopup = true;
         },
       });
     },
-    //获取手机号授权
+    //Get mobile phone number authorization
     getPhoneNumber(e) {
       let iv = e.detail.iv;
       let encryptedData = e.detail.encryptedData;
       if (!e.detail.encryptedData) {
         uni.showToast({
-          title: "请授予手机号码权限，手机号码会和会员系统用户绑定！",
+          title: "Please grant the mobile phone number permission, the mobile phone number will be bound to the member system user!",
           icon: "none",
         });
         return;
@@ -120,12 +120,12 @@ export default {
       }).then((res) => {
         storage.setAccessToken(res.data.result.accessToken);
         storage.setRefreshToken(res.data.result.refreshToken);
-        // 登录成功
+        // login successful
         uni.showToast({
-          title: "登录成功!",
+          title: "Login successful!",
           icon: "none",
         });
-        //获取用户信息
+        //Get user information
         getUserInfo().then((user) => {
           storage.setUserInfo(user.data.result);
           storage.setHasLogin(true);
@@ -141,7 +141,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-/*微信授权*/
+/*WeChat authorization*/
 page {
   background-color: #ffffff;
 }

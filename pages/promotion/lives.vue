@@ -1,252 +1,155 @@
 <template>
-  <div class="box">
-    <u-navbar class="navbar">
-      <view class="slot-wrap">
-        <u-search placeholder="搜索直播间" @custom="searchLive" @clear="clear" @search="searchLive" v-model="keyword"></u-search>
+  <view class="wrapper">
+
+    <u-navbar :border-bottom="false" :background="background" class="unavbar" :title="title">
+      <!-- middle -->
+      <view class="slot-wrap container-wrap">
+
+        <view v-if="search">
+          <u-search @search="searchFun()" @custom="searchFun()" v-model="params.goodsName"></u-search>
+        </view>
+
+      </view>
+      <!-- right side -->
+      <view slot="right">
+        <view style="margin-right: 24rpx;" @click="searchFlag()">
+          <view v-if="search">Cancel</view>
+          <u-icon v-if="!search" size="44rpx" name="search"></u-icon>
+        </view>
       </view>
     </u-navbar>
-    <!-- 轮播图 -->
-    <u-swiper @click="clickSwiper" class="swiper" :effect3d="true" :list="swiperImg">
+    <!-- Top bar -->
 
-    </u-swiper>
-    <u-tabs :is-scroll="false" @change="changeTabs" :current="current" :active-color="activeColor" inactive-color="#606266" ref="tabs" :list="tabs"></u-tabs>
+    <!-- Commodity column -->
+    <div class="swiper">
 
-    <div class="wrapper">
-      <!-- 直播中 全部 直播回放 -->
-      <div class="live-item" :class="{'invalid':item.status == 'END'}" v-for="(item,index) in liveList" :key="index" @click="handleLivePlayer(item)">
-        <div class="live-cover-img">
-          <div class="tips">
-            <div class="live-box">
-              <image class="live-gif" src="./static/live.gif"></image>
-            </div>
-            <span>{{item.status == 'END' ? '已结束' : item.status =='NEW' ? '未开始' : '直播中'}}</span>
-          </div>
-          <div class="bg"></div>
-          <u-image width="326" height="354" :src="item.shareImg" />
-        </div>
-        <div class="live-goods">
-          <div class="live-goods-name">
-            {{item.name}}
-          </div>
-          <div class="live-store">
-            <span class="wes">lilishop</span>
-          </div>
-          <div class="live-goods-list">
-            <div class="live-goods-item">
-              <u-image border-radius="20" :src="item.roomGoodsList ? item.roomGoodsList[0] : ''" height="140"></u-image>
-            </div>
-            <div class="live-goods-item">
-              <u-image border-radius="20" :src="item.roomGoodsList ? item.roomGoodsList[1] : ''" height="140"></u-image>
-            </div>
-          </div>
-        </div>
+      <div v-if="groupBuy.length !=0">
+        <view class="view-item" v-for="(groupItem, groupIndex) in groupBuy" :key="groupIndex">
+          <view class="view-left">
+            <u-image border-radius="10" shape="square" :src="groupItem.goodsImage" width="186rpx" height="186rpx">
+
+              <view slot="error" style="font-size: 24rpx;">Failed to load</view>
+            </u-image>
+          </view>
+          <view class="view-content">
+            <view class="view-content-name">
+              {{ groupItem.goodsName }}
+            </view>
+            <view class="view-content-bottom">
+              <view>
+                <view class="view-content-price">
+                  <!-- ￥{{groupItem.sales_price | unitPrice }} <span v-if="groupItem.point">+{{groupItem.point}}Points</span> -->
+                  ￥{{ groupItem.price | unitPrice }}
+                </view>
+                <view class="view-content-original_price">
+                  ￥{{ groupItem.originPrice | unitPrice }}
+                </view>
+              </view>
+
+              <view>
+                <view class="btn-group" @click="toHref(groupItem)"> To join the group</view>
+                <view class="buy-content">Sold {{ groupItem.num || 0 }} pieces</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <u-loadmore bg-color='#f8f8f8' :status="status" />
       </div>
-      <u-loadmore v-if="liveList.length > 10" bg-color="#f8f8f8" :status="status" />
+      <u-empty v-else style="margin-top:20%" text="No group activities at the moment" mode="data"></u-empty>
+
     </div>
-  </div>
+
+  </view>
 </template>
 
 <script>
-import { getLiveList } from "@/api/promotions.js";
+import * as API_Promotions from '@/api/promotions';
+import * as API_Goods from '@/api/goods';
+
 export default {
+  components: {},
   data() {
     return {
-      status: "loadmore",
-      activeColor: this.$lightColor,
-      current: 0, // 当前tabs索引
-      keyword: "", //搜索直播间
-      // 标签栏
-      tabs: [
-        {
-          name: "直播中",
-        },
-        {
-          name: "全部",
-        },
-      ],
-      // 导航栏的配置
+      status: 'loadmore',
+      is_empty: false,
+      search: false,
+      title: 'Group Joining Activities',
       background: {
-        background: "#ff9f28",
+        backgroundColor: '#fff'
       },
-      // 直播间params
-      params: [
-        {
-          pageNumber: 1,
-          pageSize: 10,
-          status: "START",
-        },
-        {
-          pageNumber: 1,
-          pageSize: 4,
-        },
-      ],
-      // 推荐直播间Params
-      recommendParams: {
+      empty: false,
+      params: {
         pageNumber: 1,
-        pageSize: 3,
-        recommend: 0,
+        pageSize: 10,
+        categoryPath: '',
+        goodsName: ''
       },
-      // 直播间列表
-      liveList: [],
-      // 推荐直播间列表
-      recommendLiveList: [],
-
-      //轮播图滚动的图片
-      swiperImg: [
-        {
-          image:
-            "https://lilishop-oss.oss-cn-beijing.aliyuncs.com/48d789cb9c864b7b87c1c0f70996c3e8.jpeg",
-        },
-      ],
+      groupBuy: []
     };
   },
-  onShow() {
-    this.params[this.current].pageNumber = 1;
-    this.liveList = [];
-    this.getLives();
-    this.getRecommendLives();
+  mounted() {
+  },
+  watch: {
+    search(val) {
+      val ? (this.title = '') : (this.title = 'Join group activities');
+    }
   },
   onReachBottom() {
-    this.params[this.current].pageNumber++;
-    this.getLives();
+    this.loadMore();
   },
+  // Click the search button
+  onNavigationBarButtonTap(e) {
+    this.popupFlag = !this.popupFlag;
+  },
+  async onLoad() {
+    this.GET_AssembleGoods();
+  },
+
   methods: {
-    /**
-     * 点击标签栏切换
-     */
-    changeTabs(index) {
-      this.current = index;
-      this.init();
+    loadMore() {
+      this.params.pageNumber++;
+      this.GET_AssembleGoods();
+    },
+    searchFlag() {
+      this.search = !this.search;
     },
 
-    /**
-     * 初始化直播间
-     */
-    init() {
-      this.liveList = [];
-      this.status = "loadmore";
-      this.getLives();
-    },
-
-    /**
-     * 清除搜索内容
-     */
-    clear() {
-      delete this.params[this.current].name;
-      this.init();
-    },
-    /**
-     * 点击顶部推荐直播间
-     */
-    clickSwiper(val) {
-      console.log(this.swiperImg[val]);
-      this.handleLivePlayer(this.swiperImg[val]);
-    },
-
-    /**
-     * 搜索直播间
-     */
-    searchLive(val) {
-      this.params[this.current].pageNumber = 1;
-      this.params[this.current].name = val;
-      this.init();
-    },
-    /**
-     * 获取推荐直播间
-     */
-    async getRecommendLives() {
-      this.status = "loading";
-      let recommendLives = await getLiveList(this.recommendParams);
-      if (recommendLives.data.success) {
-        // 推荐直播间
-        if (recommendLives.data.result.records.length != 0) {
-          this.status = "loadmore";
-          this.recommendLives = recommendLives.data.result.records;
-        } else {
-          this.status = "noMore";
-        }
-
-        /**
-         * 如果推荐直播间没有的情况下
-         * 1.获取直播间第一个图片
-         * 2.如果没有直播间设置一个默认图片
-         */
-
-        if (this.recommendLives.length == 0) {
-          if (this.liveList[0].shareImg) {
-            this.$set(this, "swiperImg", [
-              {
-                image: this.liveList[0].shareImg,
-                roomId: this.liveList[0].roomId,
-              },
-            ]);
-          }
-        } else {
-          this.recommendLives.forEach((item) => {
-            this.$set(this, "swiperImg", [
-              { image: item.shareImg, roomId: item.roomId },
-            ]);
-          });
-        }
-      }
-    },
-
-    /**
-     * 获取直播间
-     */
-    async getLives() {
-      this.status = "loading";
-      let res = await getLiveList(this.params[this.current]);
-      // 直播间
-      if (res.data.success) {
-        if (res.data.result.records.length != 0) {
-          this.status = "loadmore";
-          this.liveList.push(...res.data.result.records);
-        } else {
-          this.status = "noMore";
-        }
-        res.data.result.total >
-        this.params[this.current].pageNumber *
-          this.params[this.current].pageSize
-          ? (this.status = "loadmore")
-          : (this.status = "noMore");
-
-        console.log(this.status);
-        this.liveList.forEach((item) => {
-          if (item.roomGoodsList) {
-            item.roomGoodsList = JSON.parse(item.roomGoodsList);
-          }
-        });
-      }
-    },
-
-    /**
-     * 进入直播间
-     */
-    handleLivePlayer(val) {
-      // #ifdef MP-WEIXIN
-      let roomId = val.roomId; // 填写具体的房间号，可通过下面【获取直播房间列表】 API 获取
-      let customParams = encodeURIComponent(
-        JSON.stringify({ path: "pages/index/index", pid: 1 })
-      ); // 开发者在直播间页面路径上携带自定义参数，后续可以在分享卡片链接和跳转至商详页时获取，详见【获取自定义参数】、【直播间到商详页面携带参数】章节（上限600个字符，超过部分会被截断）
+    toHref(goods) {
       uni.navigateTo({
-        url:
-          "plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=" +
-          roomId +
-          "&custom_params=" +
-          customParams,
+        url: `/pages/product/goods?id=${ goods.skuId }&goodsId=${ goods.goodsId }`
       });
-      // #endif
-
-      // #ifndef MP-WEIXIN
-      uni.showToast({
-        title: "请从微信小程序中预览直播功能",
-        duration: 2000,
-        icon: "none",
-      });
-      // #endif
     },
-  },
+    searchFun() {
+      this.groupBuy = [];
+      this.GET_AssembleGoods();
+    },
+    // Request join group data
+    GET_AssembleGoods() {
+      this.status = 'loading';
+      const params = JSON.parse(JSON.stringify(this.params));
+      if (params.category_id === 0) delete params.category_id;
+
+      API_Promotions.getAssembleList(params)
+          .then((response) => {
+            const data = response.data.result.records;
+
+            if (!data || !data.length) {
+              this.is_empty = true;
+              this.status = 'nomore';
+            } else {
+              if (data.length <= this.params.pageSize) {
+                this.status = 'nomore';
+              } else {
+                this.status = 'loadmore';
+              }
+              this.is_empty = false;
+              this.groupBuy.push(...(data || []));
+            }
+          })
+          .catch(() => {
+          });
+    }
+  }
 };
 </script>
 
@@ -259,121 +162,136 @@ export default {
   /* 如果您想让slot内容与导航栏左右有空隙 */
   /* padding: 0 30rpx; */
 }
+
 .invalid {
   filter: grayscale(1);
 }
+
 .wrapper {
-  padding: 0 24rpx;
+  padding: 0 24 rpx;
 }
+
 .live-item {
   display: flex;
   overflow: hidden;
-  border-radius: 20rpx;
+  border-radius: 20 rpx;
   flex-wrap: wrap;
   background: #fff;
 
-  margin: 20rpx 0;
+  margin: 20 rpx 0;
 }
+
 .live-cover-img {
   position: relative;
 }
+
 .swiper {
-  margin: 20rpx 0;
+  margin: 20 rpx 0;
 }
 
 .live-goods {
   position: relative;
   flex: 1;
-  padding: 16rpx 24rpx 24rpx;
+  padding: 16 rpx 24 rpx 24 rpx;
 }
+
 .live-goods-name {
-  height: 84rpx;
+  height: 84 rpx;
   font-weight: bold;
-  font-size: 30rpx;
+  font-size: 30 rpx;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
+
 .live-store {
   display: flex;
   align-items: center;
-  margin: 20rpx 0;
+  margin: 20 rpx 0;
   overflow: hidden;
   width: calc(100% - 50rpx);
 }
+
 .live-gif {
-  width: 20rpx;
-  height: 20rpx;
+  width: 20 rpx;
+  height: 20 rpx;
 }
+
 .live-box {
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  width: 40rpx;
-  margin-right: 10rpx;
-  height: 40rpx;
+  width: 40 rpx;
+  margin-right: 10 rpx;
+  height: 40 rpx;
   background: linear-gradient(90deg, #ff6b35, #ff9f28, #ffcc03);
 }
+
 .live-goods-list {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   > .live-goods-item {
     flex: 1;
   }
+
   > .live-goods-item:nth-of-type(1) {
-    padding-right: 38rpx;
+    padding-right: 38 rpx;
   }
 }
 
 .live-icon,
 .zan {
   position: absolute;
-  width: 80rpx;
-  height: 80rpx;
+  width: 80 rpx;
+  height: 80 rpx;
   z-index: 9;
 }
+
 .tips {
   display: flex;
   position: absolute;
   z-index: 9;
 
   align-items: center;
-  top: 20rpx;
+  top: 20 rpx;
   right: 0;
-  padding: 4rpx 12rpx 4rpx 0;
-  font-size: 24rpx;
+  padding: 4 rpx 12 rpx 4 rpx 0;
+  font-size: 24 rpx;
   border-radius: 100px;
   color: #fff;
   background: rgba(0, 0, 0, 0.46);
 }
+
 .live-icon {
   right: 0;
-  top: 104rpx;
+  top: 104 rpx;
 }
 
 .zan {
   bottom: 0;
   right: 0;
-  width: 100rpx;
-  height: 100rpx;
+  width: 100 rpx;
+  height: 100 rpx;
 }
+
 .bg {
   position: absolute;
-  bottom: 4rpx;
+  bottom: 4 rpx;
   width: 100%;
-  height: 100rpx;
+  height: 100 rpx;
   z-index: 8;
   background-image: -webkit-gradient(
-    linear,
-    left bottom,
-    left top,
-    from(rgba(0, 0, 0, 0.25)),
-    color-stop(82%, transparent)
+          linear,
+          left bottom,
+          left top,
+          from(rgba(0, 0, 0, 0.25)),
+          color-stop(82%, transparent)
   );
   background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.25), transparent 82%);
-  border-bottom-left-radius: 20rpx;
+  border-bottom-left-radius: 20 rpx;
 }
 </style>

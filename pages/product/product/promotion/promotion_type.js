@@ -1,49 +1,50 @@
 const promotion = [
-  {
-    title: "积分活动",
-    value: "POINT",
-  },
-  {
-    title: "单品立减",
-    value: "MINUS",
-  },
-  {
-    title: "团购",
-    value: "GROUPBUY",
-  },
-  {
-    title: "积分换购",
-    value: "EXCHANGE",
-  },
-  {
-    title: "第二件半价",
-    value: "HALF_PRICE",
-  },
-  {
-    title: "满减优惠",
-    value: "FULL_DISCOUNT",
-  },
-  {
-    title: "限时抢购",
-    value: "SECKILL",
-  },
-  {
-    title: "拼团",
-    value: "PINTUAN",
-  },
-  {
-    title: "优惠券",
-    value: "COUPON",
-  },
+   {
+      title: 'Points Activity',
+      value: 'POINT'
+   },
+   {
+      title: 'Single product reduction',
+      value: 'MINUS'
+   },
+   {
+      title: 'Group Purchase',
+      value: 'GROUPBUY'
+   },
+   {
+      title: 'Points Redemption',
+      value: 'EXCHANGE'
+   },
+   {
+      title: 'The second item is half price',
+      value: 'HALF_PRICE'
+   },
+   {
+      title: 'Full Discount Discount',
+      value: 'FULL_DISCOUNT'
+   },
+   {
+      title: 'Limited Time Purchase',
+      value: 'SECKILL'
+   },
+   {
+      title: 'Joint Group',
+      value: 'PINTUAN'
+   },
+   {
+      title: 'Coupon',
+      value: 'COUPON'
+   }
 ];
-export default promotion
-/**格式化 */
-export function formatType(val){
-    if(val != undefined){
-        promotion.forEach(item=>{
-            if(val == item.value){
-                return item.title
-            }
-        })
-    }
+export default promotion;
+
+/**Format */
+export function formatType(val) {
+   if (val != undefined) {
+      promotion.forEach(item => {
+         if (val == item.value) {
+            return item.title;
+         }
+      });
+   }
 }

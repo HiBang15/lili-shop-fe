@@ -19,10 +19,10 @@ import uImage from "@/uview-ui/components/u-image/u-image.vue";
 import { modelNavigateTo } from "./tpl";
 export default {
   components: { uImage },
-  title: "两张横图",
+  title: "Two horizontal pictures",
   props: ["res"],
   mounted() {
-   
+
   },
   data() {
     return {

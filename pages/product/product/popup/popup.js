@@ -1,8 +1,6 @@
-
-
 export default {
-    height:"1000rpx", //弹出层高度
-    mode:"bottom", //弹出层位置
-    radius:"32", //圆角 rpx,
-    close:false //能否点击遮罩退出
-}
+   height: '1000rpx', //The height of the pop-up layer
+   mode: 'bottom', //Position of the pop-up layer
+   radius: '32', //rounded corners rpx,
+   close: false //Can you click the mask to exit
+};
